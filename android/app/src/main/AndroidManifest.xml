@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.hanri.firehydrantmapper.fire_hydrandt_mapper">
+    package="com.hanri.firehydrantmapper">
    <application
         android:label="fire_hydrandt_mapper"
         android:name="${applicationName}"
