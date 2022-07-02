@@ -2,27 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:map/map.dart';
-import 'package:latlng/latlng.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 part 'main_event.dart';
 part 'main_state.dart';
 
 class MainBloc extends Bloc<MainEvent, MainState> {
-  final MapController controller = MapController(
-    location: const LatLng(35.674, 51.41)
-  );
-
+  Completer<GoogleMapController> controller = Completer();
   MainBloc() : super(MainInitial()) {
     
 
     on<MainInitializeEvent>((event, emit) {
-      emit(MainInitializedState(controller: controller));
+      emit(MainInitializedState());
     });
-  }
-  @override
-  Future<void> close() {
-    controller.dispose();
-    return super.close();
+
+    on<LoadMapControllerEvent>((event, emit) {
+      controller.complete(event.controller);
+    });
   }
 }

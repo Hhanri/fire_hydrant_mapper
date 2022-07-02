@@ -30,8 +30,8 @@ dependencies:
   flutter:
     sdk: flutter
   google_maps_flutter: ^2.1.8
-  latlng: ^0.2.0
   flutter_bloc: ^8.0.1
+  geolocator: ^9.0.0
   firebase_core: ^1.19.1
   cloud_firestore: ^3.2.1
   firebase_storage: ^10.3.1
