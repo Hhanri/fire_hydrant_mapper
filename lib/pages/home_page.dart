@@ -1,4 +1,4 @@
-import 'package:fire_hydrandt_mapper/main_bloc/main_bloc.dart';
+import 'package:fire_hydrant_mapper/main_bloc/main_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,7 +18,16 @@ class HomePage extends StatelessWidget {
               zoom: 12
             );
 
+            final Set<Marker> markers = state.logs.map((log) {
+              return Marker(
+                markerId: MarkerId(LatLng(log.latitude, log.longitude).toString()),
+                position: LatLng(log.latitude, log.longitude),
+                infoWindow: InfoWindow(title: log.streetName)
+              );
+            }).toSet();
+
             return GoogleMap(
+              markers: markers,
               mapType: MapType.normal,
               onMapCreated: (GoogleMapController controller) {
                 context.read<MainBloc>().add(LoadMapControllerEvent(controller: controller));

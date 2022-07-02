@@ -5,4 +5,8 @@ abstract class MainState {}
 
 class MainInitial extends MainState {}
 
-class MainInitializedState extends MainState {}
+class MainInitializedState extends MainState {
+  final List<FireHydrantLogModel> logs;
+
+  MainInitializedState({required this.logs});
+}

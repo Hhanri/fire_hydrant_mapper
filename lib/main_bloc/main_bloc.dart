@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:fire_hydrant_mapper/models/fire_hydrant_log_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -13,7 +14,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     
 
     on<MainInitializeEvent>((event, emit) {
-      emit(MainInitializedState());
+      emit(MainInitializedState(logs: [FireHydrantLogModel.mockData]));
     });
 
     on<LoadMapControllerEvent>((event, emit) {

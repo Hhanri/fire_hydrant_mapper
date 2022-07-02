@@ -1,4 +1,4 @@
-# fire_hydrandt_mapper
+# fire_hydrant_mapper
 
 Fire Hydrant Mapper
 
