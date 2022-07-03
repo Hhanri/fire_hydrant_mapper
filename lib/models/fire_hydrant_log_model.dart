@@ -25,12 +25,12 @@ class FireHydrantLogModel {
   static Set<Marker> getMarkers({required BuildContext context, required List<FireHydrantLogModel> logs}) {
     final Set<Marker> markers = logs.map((log) {
       return Marker(
-        markerId: MarkerId(LatLng(log.latitude, log.longitude).toString()),
-        position: LatLng(log.latitude, log.longitude),
-        infoWindow: InfoWindow(title: log.streetName),
-        onTap: () {
-          //navigate to logs page
-        }
+          markerId: MarkerId(LatLng(log.latitude, log.longitude).toString()),
+          position: LatLng(log.latitude, log.longitude),
+          infoWindow: InfoWindow(title: log.streetName),
+          onTap: () {
+            //navigate to logs page
+          }
       );
     }).toSet();
     return markers;

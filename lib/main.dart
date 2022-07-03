@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: BlocProvider<MainBloc>(
-        create: (context) => MainBloc()..add(MainInitializeEvent()),
+        create: (context) => MainBloc(context: context)..add(MainInitializeEvent()),
         child: const HomePage(),
       ),
     );
