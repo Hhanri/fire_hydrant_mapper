@@ -10,3 +10,9 @@ class LoadMapControllerEvent extends MainEvent{
 
   LoadMapControllerEvent({required this.controller});
 }
+
+class AddPositionEvent extends MainEvent {
+  final BuildContext context;
+
+  AddPositionEvent({required this.context});
+}

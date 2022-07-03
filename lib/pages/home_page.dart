@@ -12,20 +12,48 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       body: BlocBuilder<MainBloc, MainState>(
         builder: (context, state) {
+
           if (state is MainInitializedState) {
 
             const CameraPosition initialCamera = CameraPosition(
-              target: LatLng(48.88888737849572, 2.34311714079882),
-              zoom: 12
+                target: LatLng(48.88888737849572, 2.34311714079882),
+                zoom: 12
             );
 
-            return GoogleMap(
-              markers: FireHydrantLogModel.getMarkers(context: context, logs: state.logs),
-              mapType: MapType.normal,
-              onMapCreated: (GoogleMapController controller) {
-                context.read<MainBloc>().add(LoadMapControllerEvent(controller: controller));
-              },
-              initialCameraPosition: initialCamera
+            return Stack(
+              children: [
+                StreamBuilder<List<FireHydrantLogModel>>(
+                  stream: context.read<MainBloc>().logsController.stream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      print("SNAPSHOT =  ${snapshot.data}");
+                      return GoogleMap(
+                        markers: FireHydrantLogModel.getMarkers(context: context, logs: snapshot.data!),
+                        mapType: MapType.normal,
+                        myLocationButtonEnabled: true,
+                        myLocationEnabled: true,
+                        onMapCreated: (GoogleMapController controller) {
+                          context.read<MainBloc>().add(LoadMapControllerEvent(controller: controller));
+                        },
+                        initialCameraPosition: initialCamera
+                      );
+                    }
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                ),
+                Positioned(
+                  bottom: 50,
+                  right: 10,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      context.read<MainBloc>().add(AddPositionEvent(context: context));
+                    },
+                    child: const Text("add marker")
+                  ),
+                )
+              ],
             );
           }
           return const Center(

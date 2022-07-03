@@ -1,9 +1,13 @@
 import 'package:fire_hydrant_mapper/main_bloc/main_bloc.dart';
 import 'package:fire_hydrant_mapper/pages/home_page.dart';
+import 'package:fire_hydrant_mapper/services/firebase_service.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -17,9 +21,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: BlocProvider<MainBloc>(
-        create: (context) => MainBloc(context: context)..add(MainInitializeEvent()),
-        child: const HomePage(),
+      home: RepositoryProvider(
+        create: (context) => FirebaseService(),
+        child: BlocProvider<MainBloc>(
+          create: (context) =>
+          MainBloc(RepositoryProvider.of<FirebaseService>(context))
+            ..add(MainInitializeEvent()),
+          child: const HomePage(),
+        ),
       ),
     );
   }

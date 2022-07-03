@@ -13,6 +13,24 @@ class FireHydrantArchiveModel extends Equatable{
     required this.images
   });
 
+  factory FireHydrantArchiveModel.fromJson(Map<String, dynamic> json) {
+    return FireHydrantArchiveModel(
+      date: json['date'],
+      waterLevel: json['waterLevel'],
+      note: json['note'],
+      images: json['images']
+    );
+  }
+
+  static Map<String, dynamic> toJson(FireHydrantArchiveModel model) {
+    return {
+      'date': model.date,
+      'waterLevel': model.waterLevel,
+      'note': model.note,
+      'images': model.images
+    };
+  }
+
   static final List<FireHydrantArchiveModel> mockData = [
     FireHydrantArchiveModel(
       date: DateTime.now(),
