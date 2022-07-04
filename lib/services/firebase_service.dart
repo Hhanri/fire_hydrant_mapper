@@ -3,6 +3,7 @@ import 'package:fire_hydrant_mapper/models/fire_hydrant_log_model.dart';
 import 'package:fire_hydrant_mapper/services/location_service.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:fire_hydrant_mapper/utils/extensions.dart';
 
 class FirebaseService {
   final FirebaseFirestore fireInstance = FirebaseFirestore.instance;
@@ -14,22 +15,16 @@ class FirebaseService {
     return fireInstance.collection(logsDocument).doc(logModel.geoPoint.hash).set(
       FireHydrantLogModel.toJson(model: logModel)
     );
-    return fireInstance.collection(logsDocument).add(
-      {}
-    ).then((value) => fireInstance.collection(logsDocument).doc(value.id).set(
-      FireHydrantLogModel.toJson(model: logModel)
-    ));
   }
 
   Future<void> addLocalPoint() async {
     if (await LocationService.getLocationPermission()) {
       final Position position = await LocationService.getLocation();
-      final GeoFirePoint geoPoint = GeoFirePoint(position.latitude, position.longitude);
+      final GeoFirePoint geoPoint = position.geoFireFromPosition();
       return addGeoPoint(logModel: FireHydrantLogModel.emptyLog(geoPoint: geoPoint));
     } else {
       print("NO LOCATION PERMISSION");
     }
-
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getLogsStream() {

@@ -17,4 +17,10 @@ class AddPositionEvent extends MainEvent {
   AddPositionEvent({required this.context});
 }
 
+class AddTemporaryMarker extends MainEvent {
+  final LatLng point;
+
+  AddTemporaryMarker({required this.point});
+}
+
 class CenterCameraEvent extends MainEvent {}

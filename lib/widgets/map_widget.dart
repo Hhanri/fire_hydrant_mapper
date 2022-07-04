@@ -9,6 +9,7 @@ class MapWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     const CameraPosition initialCamera = CameraPosition(
       target: LatLng(48.88888737849572, 2.34311714079882),
       zoom: 12
@@ -27,7 +28,10 @@ class MapWidget extends StatelessWidget {
             onMapCreated: (GoogleMapController controller) {
               context.read<MainBloc>().add(LoadMapControllerEvent(controller: controller));
             },
-            initialCameraPosition: initialCamera
+            initialCameraPosition: initialCamera,
+            onTap: (LatLng point) {
+              context.read<MainBloc>().add(AddTemporaryMarker(point: point));
+            },
           );
         }
         return const Center(

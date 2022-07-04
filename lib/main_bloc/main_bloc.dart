@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_hydrant_mapper/models/fire_hydrant_log_model.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
 import 'package:fire_hydrant_mapper/services/location_service.dart';
+import 'package:fire_hydrant_mapper/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -18,12 +19,15 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   StreamController<List<FireHydrantLogModel>> logsController = StreamController<List<FireHydrantLogModel>>();
   MainBloc({required this.firebaseService}) : super(MainInitial()) {
 
+    FireHydrantLogModel? tempLog;
+
     void listenToLogs() {
       firebaseService.getLogsStream().listen((QuerySnapshot<Map<String, dynamic>> event) async {
         final List<Map<String, dynamic>> docs = event.docs.map((doc) => doc.data()).toList();
-        print(docs);
         final List<FireHydrantLogModel> logs = docs.map((log) => FireHydrantLogModel.fromJson(log)).toList();
-        print(logs);
+        if (tempLog != null) {
+          logs.add(tempLog!);
+        }
         logsController.sink.add(logs);
       });
     }
@@ -41,13 +45,19 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       await firebaseService.addLocalPoint();
     });
 
+    on<AddTemporaryMarker>((event, emit) async {
+      tempLog = FireHydrantLogModel.emptyLog(
+        geoPoint: event.point.geoFireFromLatLng()
+      );
+    });
+
     on<CenterCameraEvent>((event, emit) async {
       if (await LocationService.getLocationPermission()) {
         final GoogleMapController googleMapController = await mapController.future;
         final Position position = await LocationService.getLocation();
         googleMapController.animateCamera(
           CameraUpdate.newCameraPosition(
-            CameraPosition(target: LatLng(position.latitude, position.longitude), zoom: 18 )
+            CameraPosition(target: position.latLngFromPosition(), zoom: 18 )
           )
         );
       } else {
