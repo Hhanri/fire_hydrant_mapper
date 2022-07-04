@@ -16,18 +16,14 @@ part 'main_state.dart';
 class MainBloc extends Bloc<MainEvent, MainState> {
   final FirebaseService firebaseService;
   Completer<GoogleMapController> mapController = Completer();
-  StreamController<List<FireHydrantLogModel>> logsController = StreamController<List<FireHydrantLogModel>>();
+  final StreamController<FireHydrantLogModel> tempLogStream = StreamController<FireHydrantLogModel>.broadcast();
+  final StreamController<List<FireHydrantLogModel>> logsController = StreamController<List<FireHydrantLogModel>>();
   MainBloc({required this.firebaseService}) : super(MainInitial()) {
-
-    FireHydrantLogModel? tempLog;
 
     void listenToLogs() {
       firebaseService.getLogsStream().listen((QuerySnapshot<Map<String, dynamic>> event) async {
         final List<Map<String, dynamic>> docs = event.docs.map((doc) => doc.data()).toList();
         final List<FireHydrantLogModel> logs = docs.map((log) => FireHydrantLogModel.fromJson(log)).toList();
-        if (tempLog != null) {
-          logs.add(tempLog!);
-        }
         logsController.sink.add(logs);
       });
     }
@@ -42,13 +38,12 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     });
 
     on<AddPositionEvent>((event, emit) async {
-      await firebaseService.addLocalPoint();
+      await firebaseService.addGeoPoint(logModel: event.log);
     });
 
     on<AddTemporaryMarker>((event, emit) async {
-      tempLog = FireHydrantLogModel.emptyLog(
-        geoPoint: event.point.geoFireFromLatLng()
-      );
+      tempLogStream.add(FireHydrantLogModel.emptyLog(geoPoint: event.point.geoFireFromLatLng()));
+      print("NEW TEMP LOG");
     });
 
     on<CenterCameraEvent>((event, emit) async {
@@ -68,6 +63,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   @override
   Future<void> close() {
     logsController.close();
+    tempLogStream.close();
     mapController.future.then((value) => value.dispose());
     return super.close();
   }

@@ -13,8 +13,8 @@ class LoadMapControllerEvent extends MainEvent{
 
 class AddPositionEvent extends MainEvent {
   final BuildContext context;
-
-  AddPositionEvent({required this.context});
+  final FireHydrantLogModel log;
+  AddPositionEvent({required this.context, required this.log});
 }
 
 class AddTemporaryMarker extends MainEvent {

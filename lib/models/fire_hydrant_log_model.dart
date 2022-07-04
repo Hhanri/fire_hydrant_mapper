@@ -5,7 +5,6 @@ import 'package:fire_hydrant_mapper/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:fire_hydrant_mapper/utils/extensions.dart';
 
 class FireHydrantLogModel extends Equatable {
   final String? documentId;
@@ -39,7 +38,12 @@ class FireHydrantLogModel extends Equatable {
   }
 
   static FireHydrantLogModel emptyLog({required GeoFirePoint geoPoint}) {
-    return FireHydrantLogModel(geoPoint: geoPoint, streetName: "", archives: const []);
+    return FireHydrantLogModel(
+      documentId: geoPoint.hash,
+      geoPoint: geoPoint,
+      streetName: "",
+      archives: const []
+    );
   }
 
   static final FireHydrantLogModel mockData = FireHydrantLogModel(
@@ -49,16 +53,20 @@ class FireHydrantLogModel extends Equatable {
     archives: FireHydrantArchiveModel.mockData
   );
 
+  static Marker getMarker({required BuildContext context, required FireHydrantLogModel log}) {
+    return Marker(
+      markerId: MarkerId(log.geoPoint.hash),
+      position: log.geoPoint.latLngFromGeoFire(),
+      infoWindow: InfoWindow(title: log.streetName),
+      onTap: () {
+        //navigate to logs page
+      }
+    );
+  }
+
   static Set<Marker> getMarkers({required BuildContext context, required List<FireHydrantLogModel> logs}) {
     final Set<Marker> markers = logs.map((log) {
-      return Marker(
-        markerId: MarkerId(log.geoPoint.hash),
-        position: log.geoPoint.latLngFromGeoFire(),
-        infoWindow: InfoWindow(title: log.streetName),
-        onTap: () {
-          //navigate to logs page
-        }
-      );
+      return getMarker(context: context, log: log);
     }).toSet();
     return markers;
   }

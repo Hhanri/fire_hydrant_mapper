@@ -15,29 +15,41 @@ class MapWidget extends StatelessWidget {
       zoom: 12
     );
 
-    return StreamBuilder<List<FireHydrantLogModel>>(
-      stream: context.read<MainBloc>().logsController.stream,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return GoogleMap(
-            markers: FireHydrantLogModel.getMarkers(context: context, logs: snapshot.data!),
-            mapType: MapType.normal,
-            myLocationButtonEnabled: true,
-            myLocationEnabled: true,
-            zoomControlsEnabled: false,
-            onMapCreated: (GoogleMapController controller) {
-              context.read<MainBloc>().add(LoadMapControllerEvent(controller: controller));
-            },
-            initialCameraPosition: initialCamera,
-            onTap: (LatLng point) {
-              context.read<MainBloc>().add(AddTemporaryMarker(point: point));
-            },
-          );
-        }
-        return const Center(
-          child: CircularProgressIndicator(),
+    //local temporary marker stream
+    return StreamBuilder<FireHydrantLogModel?>(
+      stream: context.read<MainBloc>().tempLogStream.stream,
+      builder: (context, tempLog) {
+
+        //server markers stream
+        return StreamBuilder<List<FireHydrantLogModel>>(
+          stream: context.read<MainBloc>().logsController.stream,
+          builder: (context, serverLogs) {
+            if (serverLogs.hasData) {
+              return GoogleMap(
+                markers: FireHydrantLogModel.getMarkers(
+                  context: context, logs: [...serverLogs.data!, if (tempLog.hasData) tempLog.data!]
+                ),
+                mapType: MapType.normal,
+                myLocationButtonEnabled: true,
+                myLocationEnabled: true,
+                zoomControlsEnabled: false,
+                onMapCreated: (GoogleMapController controller) {
+                  context.read<MainBloc>().add(LoadMapControllerEvent(controller: controller));
+                },
+                initialCameraPosition: initialCamera,
+                onTap: (LatLng point) {
+                  context.read<MainBloc>().add(AddTemporaryMarker(point: point));
+                },
+              );
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
         );
-      }
+
+
+      },
     );
   }
 }
