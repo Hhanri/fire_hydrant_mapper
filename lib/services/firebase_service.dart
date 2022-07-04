@@ -9,17 +9,19 @@ class FirebaseService {
 
   final String logsDocument = "logs";
 
-  Future<DocumentReference> addGeoPoint({required FireHydrantLogModel logModel}) async {
+  Future<void> addGeoPoint({required FireHydrantLogModel logModel}) async {
     return fireInstance.collection(logsDocument).add(
-      FireHydrantLogModel.toJson(logModel)
-    );
+      {}
+    ).then((value) => fireInstance.collection(logsDocument).doc(value.id).set(
+      FireHydrantLogModel.toJson(id: value.id, model: logModel)
+    ));
 
   }
-  Future<DocumentReference> addLocalPoint() async {
+  Future<void> addLocalPoint() async {
     await Geolocator.requestPermission();
     final Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     final GeoFirePoint geoPoint = GeoFirePoint(position.latitude, position.longitude);
-    return addGeoPoint(logModel: FireHydrantLogModel.emptyLog(geoPoint));
+    return addGeoPoint(logModel: FireHydrantLogModel.emptyLog(geoPoint: geoPoint));
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getLogsStream() {

@@ -18,8 +18,9 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
     void listenToLogs() {
       firebaseService.getLogsStream().listen((QuerySnapshot<Map<String, dynamic>> event) async {
-        final List<Map<String, dynamic>> docs = event.docs.map((e) => e.data()).toList();
+        final List<Map<String, dynamic>> docs = event.docs.map((doc) => doc.data()).toList();
         final List<FireHydrantLogModel> logs = docs.map((log) => FireHydrantLogModel.fromJson(log)).toList();
+        print(logs);
         logsController.sink.add(logs);
       });
     }

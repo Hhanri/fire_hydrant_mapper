@@ -5,11 +5,13 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class FireHydrantLogModel extends Equatable {
+  final String? documentId;
   final GeoFirePoint geoPoint;
   final String streetName;
   final List<FireHydrantArchiveModel> archives;
 
   const FireHydrantLogModel({
+    this.documentId,
     required this.geoPoint,
     required this.streetName,
     required this.archives
@@ -17,25 +19,28 @@ class FireHydrantLogModel extends Equatable {
 
   factory FireHydrantLogModel.fromJson(Map<String, dynamic> json) {
     return FireHydrantLogModel(
+      documentId: json['documentId'],
       geoPoint: GeoFirePoint(json['position']['geopoint'].latitude, json['position']['geopoint'].longitude),
       streetName: json['streetName'],
       archives: List<FireHydrantArchiveModel>.from(json['archives'].map((archive) => FireHydrantArchiveModel.fromJson(archive)))
     );
   }
 
-  static Map<String, dynamic> toJson(FireHydrantLogModel model) {
+  static Map<String, dynamic> toJson({required String id, required FireHydrantLogModel model}) {
     return {
+      'documentId': id,
       'position': model.geoPoint.data,
       'streetName': model.streetName,
       'archives': model.archives.map((archive) => FireHydrantArchiveModel.toJson(archive)).toList()
     };
   }
 
-  static FireHydrantLogModel emptyLog(GeoFirePoint geoPoint) {
+  static FireHydrantLogModel emptyLog({required GeoFirePoint geoPoint}) {
     return FireHydrantLogModel(geoPoint: geoPoint, streetName: "", archives: const []);
   }
 
   static final FireHydrantLogModel mockData = FireHydrantLogModel(
+    documentId: UniqueKey().toString(),
     geoPoint: GeoFirePoint(48.88888737849572, 2.34311714079882),
     streetName: "aucune idee",
     archives: FireHydrantArchiveModel.mockData
@@ -58,5 +63,5 @@ class FireHydrantLogModel extends Equatable {
 
   @override
   // TODO: implement props
-  List<Object?> get props => [geoPoint, streetName, archives];
+  List<Object?> get props => [documentId, geoPoint, streetName, archives];
 }
