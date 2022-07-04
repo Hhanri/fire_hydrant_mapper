@@ -26,7 +26,6 @@ class HomePage extends StatelessWidget {
                   stream: context.read<MainBloc>().logsController.stream,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      print("SNAPSHOT =  ${snapshot.data}");
                       return GoogleMap(
                         markers: FireHydrantLogModel.getMarkers(context: context, logs: snapshot.data!),
                         mapType: MapType.normal,
@@ -44,7 +43,17 @@ class HomePage extends StatelessWidget {
                   }
                 ),
                 Positioned(
-                  bottom: 50,
+                  bottom: 20,
+                  left: 10,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      context.read<MainBloc>().add(CenterCameraEvent());
+                    },
+                    child: const Text("center")
+                  ),
+                ),
+                Positioned(
+                  bottom: 20,
                   right: 10,
                   child: ElevatedButton(
                     onPressed: () {

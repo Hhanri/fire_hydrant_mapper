@@ -25,8 +25,9 @@ class MyApp extends StatelessWidget {
         create: (context) => FirebaseService(),
         child: BlocProvider<MainBloc>(
           create: (context) =>
-          MainBloc(RepositoryProvider.of<FirebaseService>(context))
-            ..add(MainInitializeEvent()),
+          MainBloc(
+            firebaseService: RepositoryProvider.of<FirebaseService>(context),
+          )..add(MainInitializeEvent()),
           child: const HomePage(),
         ),
       ),

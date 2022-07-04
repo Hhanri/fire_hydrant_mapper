@@ -18,6 +18,7 @@ class FireHydrantLogModel extends Equatable {
   });
 
   factory FireHydrantLogModel.fromJson(Map<String, dynamic> json) {
+    print(json);
     return FireHydrantLogModel(
       documentId: json['documentId'],
       geoPoint: GeoFirePoint(json['position']['geopoint'].latitude, json['position']['geopoint'].longitude),
@@ -26,9 +27,9 @@ class FireHydrantLogModel extends Equatable {
     );
   }
 
-  static Map<String, dynamic> toJson({required String id, required FireHydrantLogModel model}) {
+  static Map<String, dynamic> toJson({required FireHydrantLogModel model}) {
     return {
-      'documentId': id,
+      'documentId': model.geoPoint.hash,
       'position': model.geoPoint.data,
       'streetName': model.streetName,
       'archives': model.archives.map((archive) => FireHydrantArchiveModel.toJson(archive)).toList()

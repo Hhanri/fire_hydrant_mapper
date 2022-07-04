@@ -16,3 +16,5 @@ class AddPositionEvent extends MainEvent {
 
   AddPositionEvent({required this.context});
 }
+
+class CenterCameraEvent extends MainEvent {}
