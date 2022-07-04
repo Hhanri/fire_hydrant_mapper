@@ -37,15 +37,15 @@ class FireHydrantLogModel extends Equatable {
     };
   }
 
-  static FireHydrantLogModel emptyLog({required GeoFirePoint geoPoint}) {
+  static FireHydrantLogModel emptyLog({required GeoFirePoint geoFirePoint}) {
     return FireHydrantLogModel(
-      documentId: geoPoint.hash,
-      geoPoint: geoPoint,
+      documentId: geoFirePoint.hash,
+      geoPoint: geoFirePoint,
       streetName: "",
       archives: const []
     );
   }
-
+  
   static final FireHydrantLogModel mockData = FireHydrantLogModel(
     documentId: UniqueKey().toString(),
     geoPoint: GeoFirePoint(48.88888737849572, 2.34311714079882),
@@ -55,6 +55,18 @@ class FireHydrantLogModel extends Equatable {
 
   static Marker getMarker({required BuildContext context, required FireHydrantLogModel log}) {
     return Marker(
+      markerId: MarkerId(log.geoPoint.hash),
+      position: log.geoPoint.latLngFromGeoFire(),
+      infoWindow: InfoWindow(title: log.streetName),
+      onTap: () {
+        //navigate to logs page
+      }
+    );
+  }
+  
+  static Marker getTempMarker({required BuildContext context, required FireHydrantLogModel log}) {
+    return Marker(
+      icon: BitmapDescriptor.defaultMarkerWithHue(100),
       markerId: MarkerId(log.geoPoint.hash),
       position: log.geoPoint.latLngFromGeoFire(),
       infoWindow: InfoWindow(title: log.streetName),

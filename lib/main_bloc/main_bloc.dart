@@ -42,7 +42,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     });
 
     on<AddTemporaryMarker>((event, emit) async {
-      tempLogStream.add(FireHydrantLogModel.emptyLog(geoPoint: event.point.geoFireFromLatLng()));
+      tempLogStream.add(FireHydrantLogModel.emptyLog(geoFirePoint: event.point.geoFireFromLatLng()));
       print("NEW TEMP LOG");
     });
 

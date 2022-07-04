@@ -21,7 +21,7 @@ class FirebaseService {
     if (await LocationService.getLocationPermission()) {
       final Position position = await LocationService.getLocation();
       final GeoFirePoint geoPoint = position.geoFireFromPosition();
-      return addGeoPoint(logModel: FireHydrantLogModel.emptyLog(geoPoint: geoPoint));
+      return addGeoPoint(logModel: FireHydrantLogModel.emptyLog(geoFirePoint: geoPoint));
     } else {
       print("NO LOCATION PERMISSION");
     }

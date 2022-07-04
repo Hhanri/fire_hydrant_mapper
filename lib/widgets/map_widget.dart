@@ -25,10 +25,14 @@ class MapWidget extends StatelessWidget {
           stream: context.read<MainBloc>().logsController.stream,
           builder: (context, serverLogs) {
             if (serverLogs.hasData) {
+
+              Set<Marker> markers = FireHydrantLogModel.getMarkers(context: context, logs: serverLogs.data!);
+              if (tempLog.hasData) {
+                markers.add(FireHydrantLogModel.getTempMarker(context: context, log: tempLog.data!));
+              }
+
               return GoogleMap(
-                markers: FireHydrantLogModel.getMarkers(
-                  context: context, logs: [...serverLogs.data!, if (tempLog.hasData) tempLog.data!]
-                ),
+                markers: markers,
                 mapType: MapType.normal,
                 myLocationButtonEnabled: true,
                 myLocationEnabled: true,
@@ -47,8 +51,6 @@ class MapWidget extends StatelessWidget {
             );
           }
         );
-
-
       },
     );
   }

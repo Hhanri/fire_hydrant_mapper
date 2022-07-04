@@ -17,7 +17,7 @@ class AddLocationFloatingActionButtonWidget extends StatelessWidget {
               context.read<MainBloc>().add(AddPositionEvent(context: context, log: localMarker.data!));
             },
             child: const Icon(
-                Icons.add_location_outlined
+              Icons.add_location_outlined
             ),
           );
         }
