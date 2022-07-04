@@ -1,5 +1,6 @@
 import 'package:fire_hydrant_mapper/main_bloc/main_bloc.dart';
 import 'package:fire_hydrant_mapper/models/fire_hydrant_log_model.dart';
+import 'package:fire_hydrant_mapper/widgets/center_floating_action_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -10,6 +11,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: const CenterFloatingActiobButtonWidget(),
       body: BlocBuilder<MainBloc, MainState>(
         builder: (context, state) {
 
@@ -45,16 +47,6 @@ class HomePage extends StatelessWidget {
                 Positioned(
                   bottom: 20,
                   left: 10,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.read<MainBloc>().add(CenterCameraEvent());
-                    },
-                    child: const Text("center")
-                  ),
-                ),
-                Positioned(
-                  bottom: 20,
-                  right: 10,
                   child: ElevatedButton(
                     onPressed: () {
                       context.read<MainBloc>().add(AddPositionEvent(context: context));
