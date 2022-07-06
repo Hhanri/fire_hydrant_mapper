@@ -16,18 +16,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Fire Hydrant Mapper',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: RepositoryProvider(
-        create: (context) => FirebaseService(),
-        child: BlocProvider<MainBloc>(
+    return RepositoryProvider(
+      create: (context) => FirebaseService(),
+      child: MaterialApp(
+        title: 'Fire Hydrant Mapper',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: BlocProvider<MainBloc>(
           create: (context) =>
           MainBloc(
             firebaseService: RepositoryProvider.of<FirebaseService>(context),
-          )..add(MainInitializeEvent()),
+          )
+            ..add(MainInitializeEvent()),
           child: const HomePage(),
         ),
       ),

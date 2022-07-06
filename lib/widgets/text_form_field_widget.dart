@@ -11,8 +11,10 @@ class TextFormFieldWidget extends StatelessWidget {
       controller: parameters.controller,
       decoration: InputDecoration(
         label: Text(parameters.label),
-        hintText: parameters.hint,
+        //hintText: parameters.hint,
       ),
+      keyboardType: parameters.keyboardType,
+      inputFormatters: parameters.inputFormatters,
       validator: parameters.validator,
     );
   }
@@ -43,6 +45,50 @@ class WaterLevelParameters extends TextFormParameters{
     controller: controller,
     hint: "458974",
     label: "Water Level",
+    validator: (value) {
+      if (double.tryParse(value ?? "") != null) {
+        return null;
+      }
+      return "Not a number";
+    },
+    keyboardType: TextInputType.number,
+    inputFormatters: [
+      FilteringTextInputFormatter.deny(RegExp(r'[/\\]')),
+      FilteringTextInputFormatter.singleLineFormatter,
+      FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)'))
+    ]
+  );
+}
+
+class LatitudeParameters extends TextFormParameters{
+  LatitudeParameters({
+    required TextEditingController controller
+  }) : super(
+    controller: controller,
+    hint: "48.974",
+    label: "Latitude",
+    validator: (value) {
+      if (double.tryParse(value ?? "") != null) {
+        return null;
+      }
+      return "Not a number";
+    },
+    keyboardType: TextInputType.number,
+    inputFormatters: [
+      FilteringTextInputFormatter.allow(RegExp(r'(^\d*\.?\d*)')),
+      FilteringTextInputFormatter.deny(RegExp(r'[/\\]')),
+      FilteringTextInputFormatter.singleLineFormatter,
+    ]
+  );
+}
+
+class LongitudeParameters extends TextFormParameters{
+  LongitudeParameters({
+    required TextEditingController controller
+  }) : super(
+    controller: controller,
+    hint: "48.974",
+    label: "Longitude",
     validator: (value) {
       if (double.tryParse(value ?? "") != null) {
         return null;

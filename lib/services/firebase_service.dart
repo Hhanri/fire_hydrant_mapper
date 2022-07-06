@@ -17,6 +17,10 @@ class FirebaseService {
     );
   }
 
+  Future<void> deleteGeoPoint({required String documentId}) async {
+    return fireInstance.collection(logsDocument).doc(documentId).delete();
+  }
+
   Future<void> addLocalPoint() async {
     if (await LocationService.getLocationPermission()) {
       final Position position = await LocationService.getLocation();

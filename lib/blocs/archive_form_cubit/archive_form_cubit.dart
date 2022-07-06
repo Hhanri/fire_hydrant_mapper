@@ -13,14 +13,6 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
   final TextEditingController waterLevelController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
 
-  FireHydrantArchiveModel newArchive = FireHydrantArchiveModel(
-      date: DateTime.now(),
-      waterLevel: 0.0,
-      note: "",
-      images: const []
-  );
-
-
   void changeDate(DateTime newDate) {
     date = newDate;
     //dateController.value =

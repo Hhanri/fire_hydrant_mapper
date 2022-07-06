@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fire_hydrant_mapper/models/fire_hydrant_archive_model.dart';
+import 'package:fire_hydrant_mapper/pages/log_form_page.dart';
 import 'package:fire_hydrant_mapper/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
@@ -59,7 +60,11 @@ class FireHydrantLogModel extends Equatable {
       position: log.geoPoint.latLngFromGeoFire(),
       infoWindow: InfoWindow(title: log.streetName),
       onTap: () {
-        //navigate to logs page
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => LogFormPage(initialLog: log)
+          )
+        );
       }
     );
   }
