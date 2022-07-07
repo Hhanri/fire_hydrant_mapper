@@ -20,6 +20,7 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
 
   void editArchive(List<String> newImages) {
     FireHydrantArchiveModel newArchive = FireHydrantArchiveModel(
+      parentLogId: initialArchive.parentLogId,
       date: date,
       waterLevel: double.parse(waterLevelController.text),
       note: noteController.text,

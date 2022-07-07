@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:fire_hydrant_mapper/models/fire_hydrant_archive_model.dart';
+import 'package:fire_hydrant_mapper/constants/firebase_constants.dart';
 import 'package:fire_hydrant_mapper/pages/log_form_page.dart';
 import 'package:fire_hydrant_mapper/utils/extensions.dart';
 import 'package:flutter/material.dart';
@@ -11,30 +11,30 @@ class FireHydrantLogModel extends Equatable {
   final String? documentId;
   final GeoFirePoint geoPoint;
   final String streetName;
-  final List<FireHydrantArchiveModel> archives;
+  final List<String> archivesIds;
 
   const FireHydrantLogModel({
     this.documentId,
     required this.geoPoint,
     required this.streetName,
-    required this.archives
+    required this.archivesIds
   });
 
   factory FireHydrantLogModel.fromJson(Map<String, dynamic> json) {
     return FireHydrantLogModel(
-      documentId: json['documentId'],
-      geoPoint: (json['position']['geopoint'] as GeoPoint).geoFireFromGeoPoint(),
-      streetName: json['streetName'],
-      archives: List<FireHydrantArchiveModel>.from(json['archives'].map((archive) => FireHydrantArchiveModel.fromJson(archive)))
+      documentId: json[FirebaseConstants.documentId],
+      geoPoint: (json[FirebaseConstants.position][FirebaseConstants.geopoint] as GeoPoint).geoFireFromGeoPoint(),
+      streetName: json[FirebaseConstants.streetName],
+      archivesIds: List<String>.from(json[FirebaseConstants.archivesIds])
     );
   }
 
   static Map<String, dynamic> toJson({required FireHydrantLogModel model}) {
     return {
-      'documentId': model.geoPoint.hash,
-      'position': model.geoPoint.data,
-      'streetName': model.streetName,
-      'archives': model.archives.map((archive) => FireHydrantArchiveModel.toJson(archive)).toList()
+      FirebaseConstants.documentId: model.geoPoint.hash,
+      FirebaseConstants.position: model.geoPoint.data,
+      FirebaseConstants.streetName: model.streetName,
+      FirebaseConstants.archivesIds: model.archivesIds
     };
   }
 
@@ -43,7 +43,7 @@ class FireHydrantLogModel extends Equatable {
       documentId: geoFirePoint.hash,
       geoPoint: geoFirePoint,
       streetName: "",
-      archives: const []
+      archivesIds: const []
     );
   }
   
@@ -51,7 +51,7 @@ class FireHydrantLogModel extends Equatable {
     documentId: UniqueKey().toString(),
     geoPoint: GeoFirePoint(48.88888737849572, 2.34311714079882),
     streetName: "aucune idee",
-    archives: FireHydrantArchiveModel.mockData
+    archivesIds: const []
   );
 
   static Marker getMarker({required BuildContext context, required FireHydrantLogModel log}) {
@@ -90,5 +90,5 @@ class FireHydrantLogModel extends Equatable {
 
   @override
   // TODO: implement props
-  List<Object?> get props => [documentId, geoPoint, streetName, archives];
+  List<Object?> get props => [documentId, geoPoint, streetName, archivesIds];
 }

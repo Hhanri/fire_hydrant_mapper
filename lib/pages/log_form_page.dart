@@ -1,6 +1,7 @@
 import 'package:fire_hydrant_mapper/blocs/log_form_cubit/log_form_cubit.dart';
 import 'package:fire_hydrant_mapper/models/fire_hydrant_log_model.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
+import 'package:fire_hydrant_mapper/widgets/archives_list_view_widget.dart';
 import 'package:fire_hydrant_mapper/widgets/form_app_bar.dart';
 import 'package:fire_hydrant_mapper/widgets/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,7 @@ class LogFormPage extends StatelessWidget {
                   TextFormFieldWidget(
                     parameters: LongitudeParameters(controller: context.read<LogFormCubit>().longitudeController),
                   ),
+                  Expanded(child: ArchivesListViewWidget(parentLogId: initialLog.documentId!))
                 ],
               ),
             ),
