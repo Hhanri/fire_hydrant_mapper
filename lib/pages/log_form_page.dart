@@ -50,7 +50,7 @@ class LogFormPage extends StatelessWidget {
                   TextFormFieldWidget(
                     parameters: LongitudeParameters(controller: context.read<LogFormCubit>().longitudeController),
                   ),
-                  Expanded(child: ArchivesListViewWidget(parentLogId: initialLog.documentId!))
+                  Expanded(child: ArchivesListViewWidget(parentLogId: initialLog.documentId))
                 ],
               ),
             ),

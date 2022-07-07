@@ -8,13 +8,13 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class FireHydrantLogModel extends Equatable {
-  final String? documentId;
+  final String documentId;
   final GeoFirePoint geoPoint;
   final String streetName;
   final List<String> archivesIds;
 
   const FireHydrantLogModel({
-    this.documentId,
+    required this.documentId,
     required this.geoPoint,
     required this.streetName,
     required this.archivesIds
