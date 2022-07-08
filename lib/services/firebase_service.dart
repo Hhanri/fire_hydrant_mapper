@@ -11,27 +11,36 @@ class FirebaseService {
   final FirebaseFirestore fireInstance = FirebaseFirestore.instance;
   final Geoflutterfire geo = Geoflutterfire();
 
-  Future<void> addLog({required FireHydrantLogModel logModel}) async {
-    return fireInstance.collection(FirebaseConstants.logsCollection).doc(logModel.geoPoint.hash).set(
-      FireHydrantLogModel.toJson(model: logModel)
-    );
+  Future<void> setLog({required FireHydrantLogModel logModel}) async {
+    await fireInstance
+      .collection(FirebaseConstants.logsCollection)
+      .doc(logModel.geoPoint.hash)
+      .set(FireHydrantLogModel.toJson(model: logModel));
   }
 
   Future<void> deleteLog({required String documentId}) async {
-    //TODO: delete each doc in archives
-    final currentLog = await fireInstance.collection(FirebaseConstants.logsCollection).doc(documentId).get();
-    final archives = currentLog.data()![FirebaseConstants.archivesIds];
-    for (String archive in archives) {
-      fireInstance.collection(FirebaseConstants.archivesCollection).doc(archive).delete();
-    }
-    return fireInstance.collection(FirebaseConstants.logsCollection).doc(documentId).delete();
+    //delete log
+    await fireInstance
+        .collection(FirebaseConstants.logsCollection)
+        .doc(documentId)
+        .delete();
+    //delete archives previously from this log
+    await fireInstance
+      .collection(FirebaseConstants.archivesCollection)
+      .where(FirebaseConstants.parentLogId, isEqualTo: documentId)
+      .get()
+      .then((snapshot) {
+        for (QueryDocumentSnapshot<Map<String, dynamic>> doc in snapshot.docs) {
+          doc.reference.delete();
+        }
+      });
   }
 
   Future<void> addLocalPoint() async {
     if (await LocationService.getLocationPermission()) {
       final Position position = await LocationService.getLocation();
       final GeoFirePoint geoPoint = position.geoFireFromPosition();
-      return addLog(logModel: FireHydrantLogModel.emptyLog(geoFirePoint: geoPoint));
+      return setLog(logModel: FireHydrantLogModel.emptyLog(geoFirePoint: geoPoint));
     } else {
       print("NO LOCATION PERMISSION");
     }
@@ -40,17 +49,32 @@ class FirebaseService {
   Future<void> addArchive(FireHydrantArchiveModel archive) async {
     await fireInstance
       .collection(FirebaseConstants.archivesCollection)
-      .add(FireHydrantArchiveModel.toJson(archive))
-      .then((value) {
-        //update Logs['archivesIds'] with the new archive Id
-        final String archiveDocId = value.id;
-        fireInstance
-          .collection(FirebaseConstants.logsCollection)
-          .doc(archive.parentLogId)
-          .update({
-            FirebaseConstants.archivesIds: FieldValue.arrayUnion([archiveDocId])
-        });
-    });
+      .add(FireHydrantArchiveModel.toJson(archive));
+  }
+
+  Future<void> updateArchiveParentLogId({required String parentLogId, required String newParentLogId}) async {
+    await fireInstance
+      .collection(FirebaseConstants.archivesCollection)
+      .where(FirebaseConstants.parentLogId, isEqualTo: parentLogId)
+      .get()
+      .then((snapshot) {
+        for (QueryDocumentSnapshot<Map<String, dynamic>> doc in snapshot.docs) {
+          doc.reference.update(
+            {FirebaseConstants.parentLogId: newParentLogId}
+          );
+        }
+      });
+  }
+
+  Future<void> updateLog({required FireHydrantLogModel oldLog, required FireHydrantLogModel newLog}) async {
+    if (newLog != oldLog) {
+      await setLog(logModel: newLog);
+      if (newLog.documentId != oldLog.documentId) {
+        await updateArchiveParentLogId(
+          parentLogId: oldLog.documentId, newParentLogId: newLog.documentId
+        );
+      }
+    }
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getLogsStream() {

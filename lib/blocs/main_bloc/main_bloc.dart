@@ -38,7 +38,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     });
 
     on<AddLogEvent>((event, emit) async {
-      await firebaseService.addLog(logModel: event.log);
+      await firebaseService.setLog(logModel: event.log);
     });
 
     on<AddTemporaryMarker>((event, emit) async {

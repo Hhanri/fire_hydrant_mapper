@@ -11,13 +11,11 @@ class FireHydrantLogModel extends Equatable {
   final String documentId;
   final GeoFirePoint geoPoint;
   final String streetName;
-  final List<String> archivesIds;
 
   const FireHydrantLogModel({
     required this.documentId,
     required this.geoPoint,
     required this.streetName,
-    required this.archivesIds
   });
 
   factory FireHydrantLogModel.fromJson(Map<String, dynamic> json) {
@@ -25,7 +23,6 @@ class FireHydrantLogModel extends Equatable {
       documentId: json[FirebaseConstants.documentId],
       geoPoint: (json[FirebaseConstants.position][FirebaseConstants.geopoint] as GeoPoint).geoFireFromGeoPoint(),
       streetName: json[FirebaseConstants.streetName],
-      archivesIds: List<String>.from(json[FirebaseConstants.archivesIds])
     );
   }
 
@@ -34,7 +31,6 @@ class FireHydrantLogModel extends Equatable {
       FirebaseConstants.documentId: model.geoPoint.hash,
       FirebaseConstants.position: model.geoPoint.data,
       FirebaseConstants.streetName: model.streetName,
-      FirebaseConstants.archivesIds: model.archivesIds
     };
   }
 
@@ -43,7 +39,6 @@ class FireHydrantLogModel extends Equatable {
       documentId: geoFirePoint.hash,
       geoPoint: geoFirePoint,
       streetName: "",
-      archivesIds: const []
     );
   }
 
@@ -82,6 +77,5 @@ class FireHydrantLogModel extends Equatable {
   }
 
   @override
-  // TODO: implement props
-  List<Object?> get props => [documentId, geoPoint, streetName, archivesIds];
+  List<Object?> get props => [documentId, geoPoint, streetName];
 }

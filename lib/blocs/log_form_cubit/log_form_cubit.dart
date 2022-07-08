@@ -38,16 +38,18 @@ class LogFormCubit extends Cubit<LogFormState> {
       });
   }
 
-  void editLog(List<String> newArchives) async {
-    FireHydrantLogModel newLog = FireHydrantLogModel(
-      documentId: initialLog.documentId,
-      geoPoint: GeoFirePoint(double.parse(latitudeController.text), double.parse(longitudeController.text)),
-      streetName: streetNameController.text,
-      archivesIds: newArchives
+  void editLog() async {
+    final newGeoFirePoint = GeoFirePoint(double.parse(latitudeController.text), double.parse(longitudeController.text));
+    final newDocumentId = newGeoFirePoint.hash;
+    final String newStreetName = streetNameController.text;
+
+    final FireHydrantLogModel newLog = FireHydrantLogModel(
+      documentId: newDocumentId,
+      geoPoint: newGeoFirePoint,
+      streetName: newStreetName
     );
-    if (newLog != initialLog) {
-      firebaseService.addLog(logModel: newLog);
-    }
+
+    firebaseService.updateLog(oldLog: initialLog, newLog: newLog);
   }
 
   void deleteLog() async {

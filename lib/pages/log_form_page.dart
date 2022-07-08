@@ -30,8 +30,7 @@ class LogFormPage extends StatelessWidget {
               },
               onValidate: () {
                 if (formKey.currentState!.validate()) {
-                  //TODO: call edit function
-                  context.read<LogFormCubit>().editLog([]);
+                  context.read<LogFormCubit>().editLog();
                   Navigator.of(context).pop();
                 }
               },
