@@ -8,19 +8,19 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class FireHydrantLogModel extends Equatable {
-  final String documentId;
+  final String logId;
   final GeoFirePoint geoPoint;
   final String streetName;
 
   const FireHydrantLogModel({
-    required this.documentId,
+    required this.logId,
     required this.geoPoint,
     required this.streetName,
   });
 
   factory FireHydrantLogModel.fromJson(Map<String, dynamic> json) {
     return FireHydrantLogModel(
-      documentId: json[FirebaseConstants.documentId],
+      logId: json[FirebaseConstants.logId],
       geoPoint: (json[FirebaseConstants.position][FirebaseConstants.geopoint] as GeoPoint).geoFireFromGeoPoint(),
       streetName: json[FirebaseConstants.streetName],
     );
@@ -28,7 +28,7 @@ class FireHydrantLogModel extends Equatable {
 
   static Map<String, dynamic> toJson({required FireHydrantLogModel model}) {
     return {
-      FirebaseConstants.documentId: model.geoPoint.hash,
+      FirebaseConstants.logId: model.geoPoint.hash,
       FirebaseConstants.position: model.geoPoint.data,
       FirebaseConstants.streetName: model.streetName,
     };
@@ -36,7 +36,7 @@ class FireHydrantLogModel extends Equatable {
 
   static FireHydrantLogModel emptyLog({required GeoFirePoint geoFirePoint}) {
     return FireHydrantLogModel(
-      documentId: geoFirePoint.hash,
+      logId: geoFirePoint.hash,
       geoPoint: geoFirePoint,
       streetName: "",
     );
@@ -77,5 +77,5 @@ class FireHydrantLogModel extends Equatable {
   }
 
   @override
-  List<Object?> get props => [documentId, geoPoint, streetName];
+  List<Object?> get props => [logId, geoPoint, streetName];
 }

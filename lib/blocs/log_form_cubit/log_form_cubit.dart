@@ -28,7 +28,7 @@ class LogFormCubit extends Cubit<LogFormState> {
 
   void getArchivesStream() {
     firebaseService
-      .getArchivesStream(documentId: initialLog.documentId)
+      .getArchivesStream(logId: initialLog.logId)
       .listen((event) {
         archivesStreamController.sink.add(
           event.docs.map((doc) {
@@ -40,11 +40,11 @@ class LogFormCubit extends Cubit<LogFormState> {
 
   void editLog() async {
     final newGeoFirePoint = GeoFirePoint(double.parse(latitudeController.text), double.parse(longitudeController.text));
-    final newDocumentId = newGeoFirePoint.hash;
+    final newLogId = newGeoFirePoint.hash;
     final String newStreetName = streetNameController.text;
 
     final FireHydrantLogModel newLog = FireHydrantLogModel(
-      documentId: newDocumentId,
+      logId: newLogId,
       geoPoint: newGeoFirePoint,
       streetName: newStreetName
     );
@@ -53,7 +53,7 @@ class LogFormCubit extends Cubit<LogFormState> {
   }
 
   void deleteLog() async {
-    await firebaseService.deleteLog(documentId: initialLog.documentId);
+    await firebaseService.deleteLog(logId: initialLog.logId);
   }
 
   @override

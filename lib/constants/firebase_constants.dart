@@ -7,7 +7,7 @@ class FirebaseConstants {
 
   //parameters
     //logs
-  static const String documentId = 'documentId';
+  static const String logId = 'logId';
   static const String position = 'position';
   static const String geopoint = 'geopoint';
   static const String streetName = 'streetName';

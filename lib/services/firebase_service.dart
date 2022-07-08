@@ -18,16 +18,16 @@ class FirebaseService {
       .set(FireHydrantLogModel.toJson(model: logModel));
   }
 
-  Future<void> deleteLog({required String documentId}) async {
+  Future<void> deleteLog({required String logId}) async {
     //delete log
     await fireInstance
         .collection(FirebaseConstants.logsCollection)
-        .doc(documentId)
+        .doc(logId)
         .delete();
     //delete archives previously from this log
     await fireInstance
       .collection(FirebaseConstants.archivesCollection)
-      .where(FirebaseConstants.parentLogId, isEqualTo: documentId)
+      .where(FirebaseConstants.parentLogId, isEqualTo: logId)
       .get()
       .then((snapshot) {
         for (QueryDocumentSnapshot<Map<String, dynamic>> doc in snapshot.docs) {
@@ -69,9 +69,9 @@ class FirebaseService {
   Future<void> updateLog({required FireHydrantLogModel oldLog, required FireHydrantLogModel newLog}) async {
     if (newLog != oldLog) {
       await setLog(logModel: newLog);
-      if (newLog.documentId != oldLog.documentId) {
+      if (newLog.logId != oldLog.logId) {
         await updateArchiveParentLogId(
-          parentLogId: oldLog.documentId, newParentLogId: newLog.documentId
+          parentLogId: oldLog.logId, newParentLogId: newLog.logId
         );
       }
     }
@@ -81,10 +81,10 @@ class FirebaseService {
     return fireInstance.collection(FirebaseConstants.logsCollection).snapshots();
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getArchivesStream({required String documentId}) {
+  Stream<QuerySnapshot<Map<String, dynamic>>> getArchivesStream({required String logId}) {
     return fireInstance
       .collection(FirebaseConstants.archivesCollection)
-      .where(FirebaseConstants.parentLogId, isEqualTo: documentId)
+      .where(FirebaseConstants.parentLogId, isEqualTo: logId)
       .orderBy(FirebaseConstants.date)
       .snapshots();
   }
