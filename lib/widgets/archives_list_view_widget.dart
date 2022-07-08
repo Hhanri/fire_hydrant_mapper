@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ArchivesListViewWidget extends StatelessWidget {
-  final String parentLogId;
-  const ArchivesListViewWidget({Key? key, required this.parentLogId}) : super(key: key);
+  const ArchivesListViewWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
