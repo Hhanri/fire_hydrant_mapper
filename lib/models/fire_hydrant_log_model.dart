@@ -46,13 +46,6 @@ class FireHydrantLogModel extends Equatable {
       archivesIds: const []
     );
   }
-  
-  static final FireHydrantLogModel mockData = FireHydrantLogModel(
-    documentId: UniqueKey().toString(),
-    geoPoint: GeoFirePoint(48.88888737849572, 2.34311714079882),
-    streetName: "aucune idee",
-    archivesIds: const []
-  );
 
   static Marker getMarker({required BuildContext context, required FireHydrantLogModel log}) {
     return Marker(

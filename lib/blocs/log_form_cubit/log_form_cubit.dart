@@ -46,12 +46,12 @@ class LogFormCubit extends Cubit<LogFormState> {
       archivesIds: newArchives
     );
     if (newLog != initialLog) {
-      firebaseService.addGeoPoint(logModel: newLog);
+      firebaseService.addLog(logModel: newLog);
     }
   }
 
   void deleteLog() async {
-    await firebaseService.deleteGeoPoint(documentId: initialLog.documentId);
+    await firebaseService.deleteLog(documentId: initialLog.documentId);
   }
 
   @override

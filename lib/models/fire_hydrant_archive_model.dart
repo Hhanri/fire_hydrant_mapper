@@ -37,22 +37,15 @@ class FireHydrantArchiveModel extends Equatable {
     };
   }
 
-  static final List<FireHydrantArchiveModel> mockData = [
-    FireHydrantArchiveModel(
-      parentLogId: 'test',
+  static FireHydrantArchiveModel emptyArchive(String parentLogId) {
+    return FireHydrantArchiveModel(
+      parentLogId: parentLogId,
       date: DateTime.now(),
-      waterLevel: 50,
-      note: "RAS",
+      waterLevel: 0,
+      note: "",
       images: const []
-    ),
-    FireHydrantArchiveModel(
-      parentLogId: 'test',
-      date: DateTime(2022, 3, 23),
-      waterLevel: 80,
-      note: "RAS",
-      images: const []
-    )
-  ];
+    );
+  }
 
   @override
   // TODO: implement props

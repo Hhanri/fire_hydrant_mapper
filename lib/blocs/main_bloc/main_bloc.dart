@@ -37,8 +37,8 @@ class MainBloc extends Bloc<MainEvent, MainState> {
       mapController.complete(event.controller);
     });
 
-    on<AddPositionEvent>((event, emit) async {
-      await firebaseService.addGeoPoint(logModel: event.log);
+    on<AddLogEvent>((event, emit) async {
+      await firebaseService.addLog(logModel: event.log);
     });
 
     on<AddTemporaryMarker>((event, emit) async {

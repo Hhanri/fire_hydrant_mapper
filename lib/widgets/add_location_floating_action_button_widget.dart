@@ -14,7 +14,7 @@ class AddLocationFloatingActionButtonWidget extends StatelessWidget {
         if (localMarker.hasData) {
           return FloatingActionButton(
             onPressed: () {
-              context.read<MainBloc>().add(AddPositionEvent(context: context, log: localMarker.data!));
+              context.read<MainBloc>().add(AddLogEvent(context: context, log: localMarker.data!));
             },
             child: const Icon(
               Icons.add_location_outlined
