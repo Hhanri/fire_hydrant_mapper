@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:fire_hydrant_mapper/constants/firebase_constants.dart';
 import 'package:flutter/foundation.dart';
 
-class FireHydrantArchiveModel extends Equatable {
+class ArchiveModel extends Equatable {
   final String parentLogId;
   final String archiveId;
   final DateTime date;
@@ -11,7 +11,7 @@ class FireHydrantArchiveModel extends Equatable {
   final String note;
   final List<String> images;
 
-  const FireHydrantArchiveModel({
+  const ArchiveModel({
     required this.parentLogId,
     required this.archiveId,
     required this.date,
@@ -20,8 +20,8 @@ class FireHydrantArchiveModel extends Equatable {
     required this.images
   });
 
-  factory FireHydrantArchiveModel.fromJson(Map<String, dynamic> json) {
-    return FireHydrantArchiveModel(
+  factory ArchiveModel.fromJson(Map<String, dynamic> json) {
+    return ArchiveModel(
       archiveId: json[FirebaseConstants.archiveId],
       parentLogId: json[FirebaseConstants.parentLogId],
       date: (json[FirebaseConstants.date] as Timestamp).toDate(),
@@ -31,9 +31,10 @@ class FireHydrantArchiveModel extends Equatable {
     );
   }
 
-  static Map<String, dynamic> toJson(FireHydrantArchiveModel model) {
+  static Map<String, dynamic> toJson(ArchiveModel model) {
     return {
       FirebaseConstants.parentLogId: model.parentLogId,
+      FirebaseConstants.archiveId: model.archiveId,
       FirebaseConstants.date: model.date,
       FirebaseConstants.waterLevel: model.waterLevel,
       FirebaseConstants.note: model.note,
@@ -41,8 +42,8 @@ class FireHydrantArchiveModel extends Equatable {
     };
   }
 
-  static FireHydrantArchiveModel emptyArchive(String parentLogId) {
-    return FireHydrantArchiveModel(
+  static ArchiveModel emptyArchive(String parentLogId) {
+    return ArchiveModel(
       archiveId: UniqueKey().toString(),
       parentLogId: parentLogId,
       date: DateTime.now(),

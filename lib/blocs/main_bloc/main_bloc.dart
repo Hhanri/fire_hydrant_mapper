@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fire_hydrant_mapper/models/fire_hydrant_log_model.dart';
+import 'package:fire_hydrant_mapper/models/log_model.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
 import 'package:fire_hydrant_mapper/services/location_service.dart';
 import 'package:fire_hydrant_mapper/utils/extensions.dart';
@@ -16,14 +16,14 @@ part 'main_state.dart';
 class MainBloc extends Bloc<MainEvent, MainState> {
   final FirebaseService firebaseService;
   Completer<GoogleMapController> mapController = Completer();
-  final StreamController<FireHydrantLogModel?> tempLogStream = StreamController<FireHydrantLogModel?>.broadcast();
-  final StreamController<List<FireHydrantLogModel>> logsController = StreamController<List<FireHydrantLogModel>>();
+  final StreamController<LogModel?> tempLogStream = StreamController<LogModel?>.broadcast();
+  final StreamController<List<LogModel>> logsController = StreamController<List<LogModel>>();
   MainBloc({required this.firebaseService}) : super(MainInitial()) {
 
     void listenToLogs() {
       firebaseService.getLogsStream().listen((QuerySnapshot<Map<String, dynamic>> event) async {
         final List<Map<String, dynamic>> docs = event.docs.map((doc) => doc.data()).toList();
-        final List<FireHydrantLogModel> logs = docs.map((log) => FireHydrantLogModel.fromJson(log)).toList();
+        final List<LogModel> logs = docs.map((log) => LogModel.fromJson(log)).toList();
         logsController.sink.add(logs);
       });
     }
@@ -43,7 +43,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
     });
 
     on<AddTemporaryMarker>((event, emit) async {
-      tempLogStream.add(FireHydrantLogModel.emptyLog(geoFirePoint: event.point.geoFireFromLatLng()));
+      tempLogStream.add(LogModel.emptyLog(geoFirePoint: event.point.geoFireFromLatLng()));
       print("NEW TEMP LOG");
     });
 

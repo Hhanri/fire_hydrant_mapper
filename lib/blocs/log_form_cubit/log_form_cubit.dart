@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:fire_hydrant_mapper/models/fire_hydrant_archive_model.dart';
-import 'package:fire_hydrant_mapper/models/fire_hydrant_log_model.dart';
+import 'package:fire_hydrant_mapper/models/archive_model.dart';
+import 'package:fire_hydrant_mapper/models/log_model.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,9 +10,9 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 part 'log_form_state.dart';
 
 class LogFormCubit extends Cubit<LogFormState> {
-  final FireHydrantLogModel initialLog;
+  final LogModel initialLog;
   final FirebaseService firebaseService;
-  final StreamController<List<FireHydrantArchiveModel>> archivesStreamController = StreamController<List<FireHydrantArchiveModel>>();
+  final StreamController<List<ArchiveModel>> archivesStreamController = StreamController<List<ArchiveModel>>();
   LogFormCubit({required this.initialLog, required this.firebaseService}) : super(LogFormInitial());
 
   final TextEditingController streetNameController = TextEditingController();
@@ -32,7 +32,7 @@ class LogFormCubit extends Cubit<LogFormState> {
       .listen((event) {
         archivesStreamController.sink.add(
           event.docs.map((doc) {
-            return FireHydrantArchiveModel.fromJson(doc.data());
+            return ArchiveModel.fromJson(doc.data());
           }).toList()
         );
       });
@@ -43,7 +43,7 @@ class LogFormCubit extends Cubit<LogFormState> {
     final newLogId = newGeoFirePoint.hash;
     final String newStreetName = streetNameController.text;
 
-    final FireHydrantLogModel newLog = FireHydrantLogModel(
+    final LogModel newLog = LogModel(
       logId: newLogId,
       geoPoint: newGeoFirePoint,
       streetName: newStreetName

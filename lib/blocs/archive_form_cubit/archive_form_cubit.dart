@@ -1,11 +1,11 @@
-import 'package:fire_hydrant_mapper/models/fire_hydrant_archive_model.dart';
+import 'package:fire_hydrant_mapper/models/archive_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'archive_form_state.dart';
 
 class ArchiveFormCubit extends Cubit<ArchiveFormState> {
-  final FireHydrantArchiveModel initialArchive;
+  final ArchiveModel initialArchive;
   ArchiveFormCubit({required this.initialArchive}) : super(ArchiveFormInitial());
 
   late DateTime date;

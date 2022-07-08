@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_hydrant_mapper/constants/firebase_constants.dart';
-import 'package:fire_hydrant_mapper/models/fire_hydrant_archive_model.dart';
-import 'package:fire_hydrant_mapper/models/fire_hydrant_log_model.dart';
+import 'package:fire_hydrant_mapper/models/archive_model.dart';
+import 'package:fire_hydrant_mapper/models/log_model.dart';
 import 'package:fire_hydrant_mapper/services/location_service.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:geolocator/geolocator.dart';
@@ -11,11 +11,21 @@ class FirebaseService {
   final FirebaseFirestore fireInstance = FirebaseFirestore.instance;
   final Geoflutterfire geo = Geoflutterfire();
 
-  Future<void> setLog({required FireHydrantLogModel logModel}) async {
+  Future<void> addLocalPoint() async {
+    if (await LocationService.getLocationPermission()) {
+      final Position position = await LocationService.getLocation();
+      final GeoFirePoint geoPoint = position.geoFireFromPosition();
+      await setLog(logModel: LogModel.emptyLog(geoFirePoint: geoPoint));
+    } else {
+      print("NO LOCATION PERMISSION");
+    }
+  }
+
+  Future<void> setLog({required LogModel logModel}) async {
     await fireInstance
       .collection(FirebaseConstants.logsCollection)
       .doc(logModel.geoPoint.hash)
-      .set(FireHydrantLogModel.toJson(model: logModel));
+      .set(LogModel.toJson(model: logModel));
   }
 
   Future<void> deleteLog({required String logId}) async {
@@ -36,21 +46,18 @@ class FirebaseService {
       });
   }
 
-  Future<void> addLocalPoint() async {
-    if (await LocationService.getLocationPermission()) {
-      final Position position = await LocationService.getLocation();
-      final GeoFirePoint geoPoint = position.geoFireFromPosition();
-      await setLog(logModel: FireHydrantLogModel.emptyLog(geoFirePoint: geoPoint));
-    } else {
-      print("NO LOCATION PERMISSION");
-    }
-  }
-
-  Future<void> setArchive(FireHydrantArchiveModel archive) async {
+  Future<void> setArchive(ArchiveModel archive) async {
     await fireInstance
       .collection(FirebaseConstants.archivesCollection)
       .doc(archive.archiveId)
-      .set(FireHydrantArchiveModel.toJson(archive));
+      .set(ArchiveModel.toJson(archive));
+  }
+
+  Future<void> deleteArchive({required String archiveId}) async {
+    await fireInstance
+      .collection(FirebaseConstants.archivesCollection)
+      .doc(archiveId)
+      .delete();
   }
 
   Future<void> updateArchiveParentLogId({required String parentLogId, required String newParentLogId}) async {
@@ -67,7 +74,7 @@ class FirebaseService {
       });
   }
 
-  Future<void> updateLog({required FireHydrantLogModel oldLog, required FireHydrantLogModel newLog}) async {
+  Future<void> updateLog({required LogModel oldLog, required LogModel newLog}) async {
     if (newLog != oldLog) {
       await setLog(logModel: newLog);
       if (newLog.logId != oldLog.logId) {

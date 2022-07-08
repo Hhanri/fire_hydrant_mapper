@@ -1,5 +1,5 @@
 import 'package:fire_hydrant_mapper/blocs/main_bloc/main_bloc.dart';
-import 'package:fire_hydrant_mapper/models/fire_hydrant_log_model.dart';
+import 'package:fire_hydrant_mapper/models/log_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -8,7 +8,7 @@ class AddLocationFloatingActionButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<FireHydrantLogModel?>(
+    return StreamBuilder<LogModel?>(
       stream: context.read<MainBloc>().tempLogStream.stream,
       builder: (context, localMarker) {
         if (localMarker.hasData) {

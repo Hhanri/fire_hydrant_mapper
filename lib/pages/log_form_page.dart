@@ -1,5 +1,5 @@
 import 'package:fire_hydrant_mapper/blocs/log_form_cubit/log_form_cubit.dart';
-import 'package:fire_hydrant_mapper/models/fire_hydrant_log_model.dart';
+import 'package:fire_hydrant_mapper/models/log_model.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
 import 'package:fire_hydrant_mapper/widgets/archives_list_view_widget.dart';
 import 'package:fire_hydrant_mapper/widgets/form_app_bar.dart';
@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LogFormPage extends StatelessWidget {
-  final FireHydrantLogModel initialLog;
+  final LogModel initialLog;
   const LogFormPage({Key? key, required this.initialLog}) : super(key: key);
 
   @override

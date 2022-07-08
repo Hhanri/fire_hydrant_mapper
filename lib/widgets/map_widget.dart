@@ -1,5 +1,5 @@
 import 'package:fire_hydrant_mapper/blocs/main_bloc/main_bloc.dart';
-import 'package:fire_hydrant_mapper/models/fire_hydrant_log_model.dart';
+import 'package:fire_hydrant_mapper/models/log_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -16,19 +16,19 @@ class MapWidget extends StatelessWidget {
     );
 
     //local temporary marker stream
-    return StreamBuilder<FireHydrantLogModel?>(
+    return StreamBuilder<LogModel?>(
       stream: context.read<MainBloc>().tempLogStream.stream,
       builder: (context, tempLog) {
 
         //server markers stream
-        return StreamBuilder<List<FireHydrantLogModel>>(
+        return StreamBuilder<List<LogModel>>(
           stream: context.read<MainBloc>().logsController.stream,
           builder: (context, serverLogs) {
             if (serverLogs.hasData) {
 
-              Set<Marker> markers = FireHydrantLogModel.getMarkers(context: context, logs: serverLogs.data!);
+              Set<Marker> markers = LogModel.getMarkers(context: context, logs: serverLogs.data!);
               if (tempLog.hasData) {
-                markers.add(FireHydrantLogModel.getTempMarker(context: context, log: tempLog.data!));
+                markers.add(LogModel.getTempMarker(context: context, log: tempLog.data!));
               }
 
               return GoogleMap(

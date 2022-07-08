@@ -13,7 +13,7 @@ class LoadMapControllerEvent extends MainEvent{
 
 class AddLogEvent extends MainEvent {
   final BuildContext context;
-  final FireHydrantLogModel log;
+  final LogModel log;
   AddLogEvent({required this.context, required this.log});
 }
 
