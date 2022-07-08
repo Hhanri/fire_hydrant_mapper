@@ -38,7 +38,7 @@ class LogFormCubit extends Cubit<LogFormState> {
       });
   }
 
-  void editLog() async {
+  Future<void> editLog() async {
     final newGeoFirePoint = GeoFirePoint(double.parse(latitudeController.text), double.parse(longitudeController.text));
     final newLogId = newGeoFirePoint.hash;
     final String newStreetName = streetNameController.text;
@@ -49,11 +49,15 @@ class LogFormCubit extends Cubit<LogFormState> {
       streetName: newStreetName
     );
 
-    firebaseService.updateLog(oldLog: initialLog, newLog: newLog);
+    await firebaseService.updateLog(oldLog: initialLog, newLog: newLog);
   }
 
   void deleteLog() async {
     await firebaseService.deleteLog(logId: initialLog.logId);
+  }
+
+  void addArchive() async {
+    await firebaseService.setArchive(ArchiveModel.emptyArchive(initialLog.logId));
   }
 
   @override

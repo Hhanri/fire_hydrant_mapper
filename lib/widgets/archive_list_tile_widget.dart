@@ -13,6 +13,7 @@ class ArchiveListTileWidget extends StatelessWidget {
     return ListTile(
       title: Text(title),
       trailing: Row(
+        mainAxisSize: MainAxisSize.min,
         children: const [
           ViewArchiveButton(),
           EditArchiveButton(),

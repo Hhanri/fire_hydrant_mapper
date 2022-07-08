@@ -28,9 +28,9 @@ class LogFormPage extends StatelessWidget {
                 context.read<LogFormCubit>().deleteLog();
                 Navigator.of(context).pop();
               },
-              onValidate: () {
+              onValidate: () async {
                 if (formKey.currentState!.validate()) {
-                  context.read<LogFormCubit>().editLog();
+                  await context.read<LogFormCubit>().editLog();
                   Navigator.of(context).pop();
                 }
               },
@@ -49,7 +49,13 @@ class LogFormPage extends StatelessWidget {
                   TextFormFieldWidget(
                     parameters: LongitudeParameters(controller: context.read<LogFormCubit>().longitudeController),
                   ),
-                  const Expanded(child: ArchivesListViewWidget())
+                  const Expanded(child: ArchivesListViewWidget()),
+                  TextButton(
+                    onPressed: () {
+                      context.read<LogFormCubit>().addArchive();
+                    },
+                    child: Text('add')
+                  )
                 ],
               ),
             ),

@@ -77,6 +77,7 @@ class FirebaseService {
   Future<void> updateLog({required LogModel oldLog, required LogModel newLog}) async {
     if (newLog != oldLog) {
       await setLog(logModel: newLog);
+      await fireInstance.collection(FirebaseConstants.logsCollection).doc(oldLog.logId).delete();
       if (newLog.logId != oldLog.logId) {
         await updateArchiveParentLogId(
           parentLogId: oldLog.logId, newParentLogId: newLog.logId
