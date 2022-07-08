@@ -12,6 +12,7 @@ class FirebaseConstants {
   static const String geopoint = 'geopoint';
   static const String streetName = 'streetName';
     //archives
+  static const String archiveId = 'archiveId';
   static const String parentLogId = 'parentLogId';
   static const String date = 'date';
   static const String waterLevel = 'waterLevel';

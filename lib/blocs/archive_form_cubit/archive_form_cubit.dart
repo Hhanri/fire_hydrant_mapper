@@ -18,20 +18,11 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
     //dateController.value =
   }
 
-  void editArchive(List<String> newImages) {
-    FireHydrantArchiveModel newArchive = FireHydrantArchiveModel(
-      parentLogId: initialArchive.parentLogId,
-      date: date,
-      waterLevel: double.parse(waterLevelController.text),
-      note: noteController.text,
-      images: newImages
-    );
-    if (newArchive.date != initialArchive.date
-      || newArchive.waterLevel != initialArchive.waterLevel
-      || newArchive.note != initialArchive.note
-    ) {
-      //TODO: update archive
-    }
+  void editArchive() {
+    final DateTime newDate = date;
+    final double newWaterLevel = double.parse(waterLevelController.text);
+    final String newNote = noteController.text;
+    //TODO: update archive
   }
 
   @override

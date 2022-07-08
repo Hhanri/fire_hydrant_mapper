@@ -1,9 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fire_hydrant_mapper/constants/firebase_constants.dart';
+import 'package:flutter/foundation.dart';
 
 class FireHydrantArchiveModel extends Equatable {
   final String parentLogId;
+  final String archiveId;
   final DateTime date;
   final double waterLevel;
   final String note;
@@ -11,6 +13,7 @@ class FireHydrantArchiveModel extends Equatable {
 
   const FireHydrantArchiveModel({
     required this.parentLogId,
+    required this.archiveId,
     required this.date,
     required this.waterLevel,
     required this.note,
@@ -19,6 +22,7 @@ class FireHydrantArchiveModel extends Equatable {
 
   factory FireHydrantArchiveModel.fromJson(Map<String, dynamic> json) {
     return FireHydrantArchiveModel(
+      archiveId: json[FirebaseConstants.archiveId],
       parentLogId: json[FirebaseConstants.parentLogId],
       date: (json[FirebaseConstants.date] as Timestamp).toDate(),
       waterLevel: json[FirebaseConstants.waterLevel],
@@ -39,6 +43,7 @@ class FireHydrantArchiveModel extends Equatable {
 
   static FireHydrantArchiveModel emptyArchive(String parentLogId) {
     return FireHydrantArchiveModel(
+      archiveId: UniqueKey().toString(),
       parentLogId: parentLogId,
       date: DateTime.now(),
       waterLevel: 0,

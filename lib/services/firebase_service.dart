@@ -40,16 +40,17 @@ class FirebaseService {
     if (await LocationService.getLocationPermission()) {
       final Position position = await LocationService.getLocation();
       final GeoFirePoint geoPoint = position.geoFireFromPosition();
-      return setLog(logModel: FireHydrantLogModel.emptyLog(geoFirePoint: geoPoint));
+      await setLog(logModel: FireHydrantLogModel.emptyLog(geoFirePoint: geoPoint));
     } else {
       print("NO LOCATION PERMISSION");
     }
   }
 
-  Future<void> addArchive(FireHydrantArchiveModel archive) async {
+  Future<void> setArchive(FireHydrantArchiveModel archive) async {
     await fireInstance
       .collection(FirebaseConstants.archivesCollection)
-      .add(FireHydrantArchiveModel.toJson(archive));
+      .doc(archive.archiveId)
+      .set(FireHydrantArchiveModel.toJson(archive));
   }
 
   Future<void> updateArchiveParentLogId({required String parentLogId, required String newParentLogId}) async {

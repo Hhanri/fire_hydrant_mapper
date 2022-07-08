@@ -14,6 +14,7 @@ class ArchivesListViewWidget extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
+            shrinkWrap: true,
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
               return Text(
