@@ -31,7 +31,7 @@ class LogFormPage extends StatelessWidget {
               onValidate: () async {
                 if (formKey.currentState!.validate()) {
                   await context.read<LogFormCubit>().editLog();
-                  Navigator.of(context).pop();
+                  Future.microtask(() => Navigator.of(context).pop());
                 }
               },
             ),
