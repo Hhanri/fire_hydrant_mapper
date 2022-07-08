@@ -16,7 +16,7 @@ part 'main_state.dart';
 class MainBloc extends Bloc<MainEvent, MainState> {
   final FirebaseService firebaseService;
   Completer<GoogleMapController> mapController = Completer();
-  final StreamController<FireHydrantLogModel> tempLogStream = StreamController<FireHydrantLogModel>.broadcast();
+  final StreamController<FireHydrantLogModel?> tempLogStream = StreamController<FireHydrantLogModel?>.broadcast();
   final StreamController<List<FireHydrantLogModel>> logsController = StreamController<List<FireHydrantLogModel>>();
   MainBloc({required this.firebaseService}) : super(MainInitial()) {
 
@@ -39,6 +39,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
     on<AddLogEvent>((event, emit) async {
       await firebaseService.setLog(logModel: event.log);
+      tempLogStream.sink.add(null);
     });
 
     on<AddTemporaryMarker>((event, emit) async {
