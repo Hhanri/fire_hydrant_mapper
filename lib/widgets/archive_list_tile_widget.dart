@@ -1,5 +1,7 @@
+import 'package:fire_hydrant_mapper/blocs/log_form_cubit/log_form_cubit.dart';
 import 'package:fire_hydrant_mapper/models/archive_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
 class ArchiveListTileWidget extends StatelessWidget {
@@ -14,10 +16,10 @@ class ArchiveListTileWidget extends StatelessWidget {
       title: Text(title),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
-        children: const [
-          ViewArchiveButton(),
-          EditArchiveButton(),
-          DeleteArchiveButton()
+        children: [
+          const ViewArchiveButton(),
+          const EditArchiveButton(),
+          DeleteArchiveButton(archiveId: archive.archiveId)
         ],
       )
     );
@@ -53,13 +55,14 @@ class EditArchiveButton extends StatelessWidget {
 }
 
 class DeleteArchiveButton extends StatelessWidget {
-  const DeleteArchiveButton({Key? key}) : super(key: key);
+  final String archiveId;
+  const DeleteArchiveButton({Key? key, required this.archiveId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () {
-
+      onPressed: () async {
+        await context.read<LogFormCubit>().deleteArchive(archiveId);
       },
       icon: const Icon(Icons.delete),
     );

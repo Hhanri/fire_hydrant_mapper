@@ -65,7 +65,6 @@ class FirebaseService {
       .collection(FirebaseConstants.archivesCollection)
       .doc(newArchive.archiveId)
       .update(ArchiveModel.toJsonWithoutImages(newArchive));
-    throw FirebaseException(plugin: 'error', message: 'this is a test');
   }
 
   Future<void> updateArchiveParentLogId({required String parentLogId, required String newParentLogId}) async {
@@ -85,11 +84,11 @@ class FirebaseService {
   Future<void> updateLog({required LogModel oldLog, required LogModel newLog}) async {
     if (newLog != oldLog) {
       await setLog(logModel: newLog);
-      await fireInstance
-        .collection(FirebaseConstants.logsCollection)
-        .doc(oldLog.logId)
-        .delete();
       if (newLog.logId != oldLog.logId) {
+        await fireInstance
+          .collection(FirebaseConstants.logsCollection)
+          .doc(oldLog.logId)
+          .delete();
         await updateArchiveParentLogId(
           parentLogId: oldLog.logId,
           newParentLogId: newLog.logId

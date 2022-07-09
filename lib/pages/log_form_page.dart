@@ -36,9 +36,9 @@ class LogFormPage extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             appBar: FormAppBarWidget(
-              onDelete: () {
-                context.read<LogFormCubit>().deleteLog();
-                Navigator.of(context).pop();
+              onDelete: () async {
+                await context.read<LogFormCubit>().deleteLog();
+                Future.microtask(() => Navigator.of(context).pop());
               },
               onValidate: () async {
                 if (formKey.currentState!.validate()) {
@@ -63,8 +63,8 @@ class LogFormPage extends StatelessWidget {
                   ),
                   const Expanded(child: ArchivesListViewWidget()),
                   TextButton(
-                    onPressed: () {
-                      context.read<LogFormCubit>().addArchive();
+                    onPressed: () async {
+                      await context.read<LogFormCubit>().addArchive();
                     },
                     child: const Text('add')
                   )

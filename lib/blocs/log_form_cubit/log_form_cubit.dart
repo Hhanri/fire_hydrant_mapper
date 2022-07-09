@@ -41,8 +41,6 @@ class LogFormCubit extends Cubit<LogFormState> {
   }
 
   Future<void> editLog() async {
-    emit(loadingState);
-
     final newGeoFirePoint = GeoFirePoint(double.parse(latitudeController.text), double.parse(longitudeController.text));
     final newLogId = newGeoFirePoint.hash;
     final String newStreetName = streetNameController.text;
@@ -52,38 +50,36 @@ class LogFormCubit extends Cubit<LogFormState> {
       geoPoint: newGeoFirePoint,
       streetName: newStreetName
     );
-    try {
-      await firebaseService.updateLog(oldLog: initialLog, newLog: newLog);
-      emit(notLoadingState);
-    } on FirebaseException catch(error) {
-      emitErrorState(error);
-    }
+    await tryCatch(firebaseService.updateLog(oldLog: initialLog, newLog: newLog));
   }
 
-  void deleteLog() async {
-    emit(loadingState);
-    try {
-      await firebaseService.deleteLog(logId: initialLog.logId);
-      emit(notLoadingState);
-    } on FirebaseException catch(error) {
-      emit(LogFormInitial(isLoading: false, errorMessage: error.message));
-    }
-
+  Future<void> deleteLog() async {
+    await tryCatch(firebaseService.deleteLog(logId: initialLog.logId));
   }
 
-  void addArchive() async {
-    await firebaseService.setArchive(ArchiveModel.emptyArchive(initialLog.logId));
+  Future<void> addArchive() async {
+    await tryCatch(firebaseService.setArchive(ArchiveModel.emptyArchive(initialLog.logId)));
   }
 
-
-
-
+  Future<void> deleteArchive(String archiveId) async {
+    await tryCatch(firebaseService.deleteArchive(archiveId: archiveId));
+  }
 
   final loadingState = const LogFormInitial(isLoading: true);
   final notLoadingState = const LogFormInitial(isLoading: false);
 
   void emitErrorState(FirebaseException error) {
     emit(LogFormInitial(isLoading: false, errorMessage: error.message));
+  }
+
+  Future<void> tryCatch(Future<void> function) async {
+    emit(loadingState);
+    try {
+      await function;
+      emit(notLoadingState);
+    } on FirebaseException catch(error) {
+      emit(LogFormInitial(isLoading: false, errorMessage: error.message));
+    }
   }
 
   @override
