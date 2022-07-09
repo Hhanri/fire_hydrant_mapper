@@ -22,7 +22,6 @@ class LogFormCubit extends Cubit<LogFormState> {
   final TextEditingController longitudeController = TextEditingController();
 
   void init() {
-
     streetNameController.text = initialLog.streetName;
     latitudeController.text = initialLog.geoPoint.latitude.toString();
     longitudeController.text = initialLog.geoPoint.longitude.toString();

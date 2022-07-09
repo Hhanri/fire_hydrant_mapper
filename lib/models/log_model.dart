@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fire_hydrant_mapper/constants/firebase_constants.dart';
-import 'package:fire_hydrant_mapper/pages/log_form_page.dart';
+import 'package:fire_hydrant_mapper/router/router.dart';
 import 'package:fire_hydrant_mapper/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
@@ -48,11 +48,7 @@ class LogModel extends Equatable {
       position: log.geoPoint.latLngFromGeoFire(),
       infoWindow: InfoWindow(title: log.streetName),
       onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => LogFormPage(initialLog: log)
-          )
-        );
+        Navigator.of(context).pushNamed(AppRouter.logFormRoute, arguments: log);
       }
     );
   }
