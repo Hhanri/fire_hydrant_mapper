@@ -22,21 +22,20 @@ class LogFormCubit extends Cubit<LogFormState> {
   final TextEditingController longitudeController = TextEditingController();
 
   void init() {
+
     streetNameController.text = initialLog.streetName;
     latitudeController.text = initialLog.geoPoint.latitude.toString();
     longitudeController.text = initialLog.geoPoint.longitude.toString();
-    getArchivesStream();
+    archivesStreamController.addStream(getArchivesStream());
   }
 
-  void getArchivesStream() {
-    firebaseService
+  Stream<List<ArchiveModel>> getArchivesStream() {
+    return firebaseService
       .getArchivesStream(logId: initialLog.logId)
-      .listen((event) {
-        archivesStreamController.sink.add(
-          event.docs.map((doc) {
-            return ArchiveModel.fromJson(doc.data());
-          }).toList()
-        );
+      .map((event) {
+        return event.docs.map((doc) {
+          return ArchiveModel.fromJson(doc.data());
+        }).toList();
       });
   }
 
