@@ -65,6 +65,7 @@ class FirebaseService {
       .collection(FirebaseConstants.archivesCollection)
       .doc(newArchive.archiveId)
       .update(ArchiveModel.toJsonWithoutImages(newArchive));
+    throw FirebaseException(plugin: 'error', message: 'this is a test');
   }
 
   Future<void> updateArchiveParentLogId({required String parentLogId, required String newParentLogId}) async {

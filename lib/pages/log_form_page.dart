@@ -1,5 +1,7 @@
 import 'package:fire_hydrant_mapper/blocs/log_form_cubit/log_form_cubit.dart';
+import 'package:fire_hydrant_mapper/dialogs/error_dialog.dart';
 import 'package:fire_hydrant_mapper/models/log_model.dart';
+import 'package:fire_hydrant_mapper/screens/loading/loading_screen.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
 import 'package:fire_hydrant_mapper/widgets/archives_list_view_widget.dart';
 import 'package:fire_hydrant_mapper/widgets/form_app_bar.dart';
@@ -20,7 +22,17 @@ class LogFormPage extends StatelessWidget {
       create: (context) => LogFormCubit(
         initialLog: initialLog, firebaseService: RepositoryProvider.of<FirebaseService>(context)
       )..init(),
-      child: BlocBuilder<LogFormCubit, LogFormState>(
+      child: BlocConsumer<LogFormCubit, LogFormState>(
+        listener: (context, state) {
+          if (state.isLoading) {
+            LoadingScreen.instance().show(context: context, text: 'loading...');
+          } else {
+            LoadingScreen.instance().hide();
+          }
+          if (state.errorMessage != null) {
+            showErrorMessage(errorMessage: state.errorMessage!, context: context);
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             appBar: FormAppBarWidget(

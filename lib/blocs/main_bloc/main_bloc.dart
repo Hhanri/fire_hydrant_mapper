@@ -44,7 +44,6 @@ class MainBloc extends Bloc<MainEvent, MainState> {
 
     on<AddTemporaryMarker>((event, emit) async {
       tempLogStream.add(LogModel.emptyLog(geoFirePoint: event.point.geoFireFromLatLng()));
-      print("NEW TEMP LOG");
     });
 
     on<CenterCameraEvent>((event, emit) async {
