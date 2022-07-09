@@ -42,6 +42,16 @@ class ArchiveModel extends Equatable {
     };
   }
 
+  static Map<String, dynamic> toJsonWithoutImages(ArchiveModel model) {
+    return {
+      FirebaseConstants.parentLogId: model.parentLogId,
+      FirebaseConstants.archiveId: model.archiveId,
+      FirebaseConstants.date: model.date,
+      FirebaseConstants.waterLevel: model.waterLevel,
+      FirebaseConstants.note: model.note,
+    };
+  }
+
   static ArchiveModel emptyArchive(String parentLogId) {
     return ArchiveModel(
       archiveId: UniqueKey().toString(),

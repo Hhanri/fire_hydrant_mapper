@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 import 'package:fire_hydrant_mapper/models/archive_model.dart';
 import 'package:fire_hydrant_mapper/models/log_model.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
@@ -13,7 +15,7 @@ class LogFormCubit extends Cubit<LogFormState> {
   final LogModel initialLog;
   final FirebaseService firebaseService;
   final StreamController<List<ArchiveModel>> archivesStreamController = StreamController<List<ArchiveModel>>();
-  LogFormCubit({required this.initialLog, required this.firebaseService}) : super(LogFormInitial());
+  LogFormCubit({required this.initialLog, required this.firebaseService}) : super(const LogFormInitial(isLoading: false));
 
   final TextEditingController streetNameController = TextEditingController();
   final TextEditingController latitudeController = TextEditingController();
@@ -39,6 +41,8 @@ class LogFormCubit extends Cubit<LogFormState> {
   }
 
   Future<void> editLog() async {
+    emit(loadingState);
+
     final newGeoFirePoint = GeoFirePoint(double.parse(latitudeController.text), double.parse(longitudeController.text));
     final newLogId = newGeoFirePoint.hash;
     final String newStreetName = streetNameController.text;
@@ -48,16 +52,38 @@ class LogFormCubit extends Cubit<LogFormState> {
       geoPoint: newGeoFirePoint,
       streetName: newStreetName
     );
-
-    await firebaseService.updateLog(oldLog: initialLog, newLog: newLog);
+    try {
+      await firebaseService.updateLog(oldLog: initialLog, newLog: newLog);
+      emit(notLoadingState);
+    } on FirebaseException catch(error) {
+      emitErrorState(error);
+    }
   }
 
   void deleteLog() async {
-    await firebaseService.deleteLog(logId: initialLog.logId);
+    emit(loadingState);
+    try {
+      await firebaseService.deleteLog(logId: initialLog.logId);
+      emit(notLoadingState);
+    } on FirebaseException catch(error) {
+      emit(LogFormInitial(isLoading: false, errorMessage: error.message));
+    }
+
   }
 
   void addArchive() async {
     await firebaseService.setArchive(ArchiveModel.emptyArchive(initialLog.logId));
+  }
+
+
+
+
+
+  final loadingState = const LogFormInitial(isLoading: true);
+  final notLoadingState = const LogFormInitial(isLoading: false);
+
+  void emitErrorState(FirebaseException error) {
+    emit(LogFormInitial(isLoading: false, errorMessage: error.message));
   }
 
   @override

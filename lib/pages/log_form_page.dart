@@ -54,7 +54,7 @@ class LogFormPage extends StatelessWidget {
                     onPressed: () {
                       context.read<LogFormCubit>().addArchive();
                     },
-                    child: Text('add')
+                    child: const Text('add')
                   )
                 ],
               ),

@@ -60,6 +60,13 @@ class FirebaseService {
       .delete();
   }
 
+  Future<void> updateArchiveWithoutImages({required ArchiveModel newArchive}) async {
+    await fireInstance
+      .collection(FirebaseConstants.archivesCollection)
+      .doc(newArchive.archiveId)
+      .update(ArchiveModel.toJsonWithoutImages(newArchive));
+  }
+
   Future<void> updateArchiveParentLogId({required String parentLogId, required String newParentLogId}) async {
     await fireInstance
       .collection(FirebaseConstants.archivesCollection)
@@ -77,10 +84,14 @@ class FirebaseService {
   Future<void> updateLog({required LogModel oldLog, required LogModel newLog}) async {
     if (newLog != oldLog) {
       await setLog(logModel: newLog);
-      await fireInstance.collection(FirebaseConstants.logsCollection).doc(oldLog.logId).delete();
+      await fireInstance
+        .collection(FirebaseConstants.logsCollection)
+        .doc(oldLog.logId)
+        .delete();
       if (newLog.logId != oldLog.logId) {
         await updateArchiveParentLogId(
-          parentLogId: oldLog.logId, newParentLogId: newLog.logId
+          parentLogId: oldLog.logId,
+          newParentLogId: newLog.logId
         );
       }
     }
