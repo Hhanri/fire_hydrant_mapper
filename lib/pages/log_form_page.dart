@@ -20,7 +20,9 @@ class LogFormPage extends StatelessWidget {
 
     return BlocProvider<LogFormCubit>(
       create: (context) => LogFormCubit(
-        initialLog: initialLog, firebaseService: RepositoryProvider.of<FirebaseService>(context)
+        context: context,
+        initialLog: initialLog,
+        firebaseService: RepositoryProvider.of<FirebaseService>(context)
       )..init(),
       child: BlocConsumer<LogFormCubit, LogFormState>(
         listener: (context, state) {
@@ -36,14 +38,12 @@ class LogFormPage extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             appBar: FormAppBarWidget(
-              onDelete: () async {
-                await context.read<LogFormCubit>().deleteLog();
-                await Future.microtask(() => Navigator.of(context).pop());
+              onDelete: () {
+                context.read<LogFormCubit>().deleteLog();
               },
-              onValidate: () async {
+              onValidate: () {
                 if (formKey.currentState!.validate()) {
-                  await context.read<LogFormCubit>().editLog();
-                  await Future.microtask(() => Navigator.of(context).pop());
+                  context.read<LogFormCubit>().editLog();
                 }
               },
             ),

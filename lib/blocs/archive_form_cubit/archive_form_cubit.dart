@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fire_hydrant_mapper/dialogs/validate_dialog.dart';
 import 'package:fire_hydrant_mapper/models/archive_model.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
 import 'package:fire_hydrant_mapper/utils/extensions.dart';
@@ -19,6 +20,7 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
   final TextEditingController noteController = TextEditingController();
 
   void init() {
+    date = initialArchive.date;
     dateController.text = initialArchive.date.formatDate();
     waterLevelController.text = initialArchive.waterLevel.toString();
     noteController.text = initialArchive.note;
@@ -55,12 +57,16 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
     }
   }
 
-
-  Future<void> deleteArchive() async {
-    await tryCatch(firebaseService.deleteArchive(archiveId: initialArchive.archiveId));
+  void deleteArchive() {
+    continueDialog(
+      action: 'delete',
+      elementName: 'archive',
+      shouldPop: true,
+      function: () async => await firebaseService.deleteArchive(archiveId: initialArchive.archiveId)
+    );
   }
 
-  Future<void> editArchive() async {
+  void editArchive() {
     final DateTime newDate = date;
     final double newWaterLevel = double.parse(waterLevelController.text);
     final String newNote = noteController.text;
@@ -76,10 +82,11 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
         waterLevel: newWaterLevel,
         note: newNote,
       );
-      await tryCatch(
-        firebaseService.updateArchiveWithoutImages(
-          newArchive: newArchiveModel
-        )
+      continueDialog(
+        action: 'edit',
+        elementName: 'archive',
+        shouldPop: true,
+        function: () async => await firebaseService.updateArchiveWithoutImages(newArchive: newArchiveModel)
       );
     }
   }
@@ -91,13 +98,20 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
     emit(ArchiveFormInitial(isLoading: false, errorMessage: error.message));
   }
 
-  Future<void> tryCatch(Future<void> function) async {
+  Future<void> tryCatch(Function function) async {
     emit(loadingState);
     try {
-      await function;
+      await function();
       emit(notLoadingState);
     } on FirebaseException catch(error) {
       emit(ArchiveFormInitial(isLoading: false, errorMessage: error.message));
+    }
+  }
+  Future<void> continueDialog({required String action, required String elementName, required bool shouldPop, required Function function}) async{
+    final shouldContinue = await showValidateDialog(context: context, action: action, elementName: elementName);
+    if (shouldContinue == 'continue') {
+      await tryCatch(function);
+      shouldPop ? Future.microtask(() => Navigator.of(context).pop()) : null;
     }
   }
 

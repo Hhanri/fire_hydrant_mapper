@@ -62,8 +62,8 @@ class DeleteArchiveButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      onPressed: () async {
-        await context.read<LogFormCubit>().deleteArchive(archiveId);
+      onPressed: () {
+        context.read<LogFormCubit>().deleteArchive(archiveId);
       },
       icon: const Icon(Icons.delete),
     );

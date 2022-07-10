@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:fire_hydrant_mapper/dialogs/validate_dialog.dart';
 import 'package:fire_hydrant_mapper/models/archive_model.dart';
 import 'package:fire_hydrant_mapper/models/log_model.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
@@ -12,10 +13,11 @@ import 'package:geoflutterfire/geoflutterfire.dart';
 part 'log_form_state.dart';
 
 class LogFormCubit extends Cubit<LogFormState> {
+  final BuildContext context;
   final LogModel initialLog;
   final FirebaseService firebaseService;
   final StreamController<List<ArchiveModel>> archivesStreamController = StreamController<List<ArchiveModel>>();
-  LogFormCubit({required this.initialLog, required this.firebaseService}) : super(const LogFormInitial(isLoading: false));
+  LogFormCubit({required this.context, required this.initialLog, required this.firebaseService}) : super(const LogFormInitial(isLoading: false));
 
   final TextEditingController streetNameController = TextEditingController();
   final TextEditingController latitudeController = TextEditingController();
@@ -28,7 +30,7 @@ class LogFormCubit extends Cubit<LogFormState> {
     archivesStreamController.addStream(firebaseService.getArchivesStream(parentLogId: initialLog.logId));
   }
 
-  Future<void> editLog() async {
+  void editLog() {
     final newGeoFirePoint = GeoFirePoint(double.parse(latitudeController.text), double.parse(longitudeController.text));
     final newLogId = newGeoFirePoint.hash;
     final String newStreetName = streetNameController.text;
@@ -38,19 +40,34 @@ class LogFormCubit extends Cubit<LogFormState> {
       geoPoint: newGeoFirePoint,
       streetName: newStreetName
     );
-    await tryCatch(firebaseService.updateLog(oldLog: initialLog, newLog: newLog));
+    continueDialog(
+      action: 'edit',
+      elementName: 'log',
+      shouldPop: true,
+      function: () async => await firebaseService.updateLog(oldLog: initialLog, newLog: newLog)
+    );
   }
 
-  Future<void> deleteLog() async {
-    await tryCatch(firebaseService.deleteLog(logId: initialLog.logId));
+  void deleteLog() {
+    continueDialog(
+      action: 'delete',
+      elementName: 'log',
+      shouldPop: true,
+      function: () async => await firebaseService.deleteLog(logId: initialLog.logId)
+    );
   }
 
   Future<void> addArchive() async {
-    await tryCatch(firebaseService.setArchive(ArchiveModel.emptyArchive(initialLog.logId)));
+    await tryCatch(() async => await firebaseService.setArchive(ArchiveModel.emptyArchive(initialLog.logId)));
   }
 
-  Future<void> deleteArchive(String archiveId) async {
-    await tryCatch(firebaseService.deleteArchive(archiveId: archiveId));
+  void deleteArchive(String archiveId) {
+    continueDialog(
+      action: 'delete',
+      elementName: 'archive',
+      shouldPop: false,
+      function: () async => await firebaseService.deleteArchive(archiveId: archiveId)
+    );
   }
 
   final loadingState = const LogFormInitial(isLoading: true);
@@ -60,13 +77,20 @@ class LogFormCubit extends Cubit<LogFormState> {
     emit(LogFormInitial(isLoading: false, errorMessage: error.message));
   }
 
-  Future<void> tryCatch(Future<void> function) async {
+  Future<void> tryCatch(Function function) async {
     emit(loadingState);
     try {
-      await function;
+      await function();
       emit(notLoadingState);
     } on FirebaseException catch(error) {
       emit(LogFormInitial(isLoading: false, errorMessage: error.message));
+    }
+  }
+  Future<void> continueDialog({required String action, required String elementName, required bool shouldPop, required Function function}) async{
+    final shouldContinue = await showValidateDialog(context: context, action: action, elementName: elementName);
+    if (shouldContinue == 'continue') {
+      await tryCatch(function);
+      shouldPop ? Future.microtask(() => Navigator.of(context).pop()) : null;
     }
   }
 

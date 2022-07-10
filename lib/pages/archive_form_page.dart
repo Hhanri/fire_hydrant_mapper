@@ -37,14 +37,12 @@ class ArchiveFormPage extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             appBar: FormAppBarWidget(
-              onDelete: () async {
-                await context.read<ArchiveFormCubit>().deleteArchive();
-                await Future.microtask(() => Navigator.of(context).pop());
+              onDelete: () {
+                context.read<ArchiveFormCubit>().deleteArchive();
               },
-              onValidate: () async {
+              onValidate: () {
                 if (formKey.currentState!.validate()) {
-                  await context.read<ArchiveFormCubit>().editArchive();
-                  await Future.microtask(() => Navigator.of(context).pop());
+                  context.read<ArchiveFormCubit>().editArchive();
                 }
               },
             ),

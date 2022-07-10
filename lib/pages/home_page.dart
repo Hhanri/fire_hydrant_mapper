@@ -18,14 +18,14 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(),
         floatingActionButton: const AddLocationFloatingActionButtonWidget(),
         body: BlocBuilder<MainBloc, MainState>(
-            builder: (context, state) {
-              if (state is MainInitializedState) {
-                return const MapWidget();
-              }
-              return const Center(
-                child: Text("Error"),
-              );
+          builder: (context, state) {
+            if (state is MainInitializedState) {
+              return const MapWidget();
             }
+            return const Center(
+              child: Text("Error"),
+            );
+          }
         ),
       ),
     );
