@@ -1,5 +1,3 @@
-import 'package:fire_hydrant_mapper/blocs/main_bloc/main_bloc.dart';
-import 'package:fire_hydrant_mapper/pages/home_page.dart';
 import 'package:fire_hydrant_mapper/router/router.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -20,6 +18,9 @@ class MyApp extends StatelessWidget {
     return RepositoryProvider<FirebaseService>(
       create: (context) => FirebaseService(),
       child: MaterialApp(
+        builder: (context, child) {
+          return MediaQuery(data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true), child: child!);
+        },
         title: 'Fire Hydrant Mapper',
         theme: ThemeData(
           primarySwatch: Colors.blue,

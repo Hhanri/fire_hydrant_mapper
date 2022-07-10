@@ -1,8 +1,9 @@
 import 'package:fire_hydrant_mapper/blocs/log_form_cubit/log_form_cubit.dart';
 import 'package:fire_hydrant_mapper/models/archive_model.dart';
+import 'package:fire_hydrant_mapper/router/router.dart';
+import 'package:fire_hydrant_mapper/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 
 class ArchiveListTileWidget extends StatelessWidget {
   final ArchiveModel archive;
@@ -11,14 +12,13 @@ class ArchiveListTileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final String title = DateFormat('yyyy-MM-dd – kk:mm').format(archive.date);
     return ListTile(
-      title: Text(title),
+      title: Text(archive.date.formatDate()),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           const ViewArchiveButton(),
-          const EditArchiveButton(),
+          EditArchiveButton(archive: archive,),
           DeleteArchiveButton(archiveId: archive.archiveId)
         ],
       )
@@ -41,13 +41,14 @@ class ViewArchiveButton extends StatelessWidget {
 }
 
 class EditArchiveButton extends StatelessWidget {
-  const EditArchiveButton({Key? key}) : super(key: key);
+  final ArchiveModel archive;
+  const EditArchiveButton({Key? key, required this.archive}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () {
-
+        Navigator.of(context).pushNamed(AppRouter.archiveFormRoute, arguments: archive);
       },
       icon: const Icon(Icons.edit),
     );

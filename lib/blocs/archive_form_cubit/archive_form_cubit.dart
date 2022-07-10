@@ -2,28 +2,65 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fire_hydrant_mapper/models/archive_model.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
+import 'package:fire_hydrant_mapper/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-
 part 'archive_form_state.dart';
 
 class ArchiveFormCubit extends Cubit<ArchiveFormState> {
   final ArchiveModel initialArchive;
   final FirebaseService firebaseService;
-  ArchiveFormCubit({required this.initialArchive, required this.firebaseService}) : super(const ArchiveFormInitial(isLoading: false));
+  final BuildContext context;
+  ArchiveFormCubit({required this.initialArchive, required this.firebaseService, required this.context}) : super(const ArchiveFormInitial(isLoading: false));
 
   late DateTime date;
   final TextEditingController dateController = TextEditingController();
   final TextEditingController waterLevelController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
 
-  void changeDate(DateTime newDate) {
-    date = newDate;
-    dateController.text = DateFormat('yyyy-MM-dd hh:mm').format(date);
+  void init() {
+    dateController.text = initialArchive.date.formatDate();
+    waterLevelController.text = initialArchive.waterLevel.toString();
+    noteController.text = initialArchive.note;
   }
 
-  void editArchive() {
+  void changeDate(DateTime newDate) {
+    date = newDate;
+    dateController.text = date.formatDate();
+  }
+
+  Future<void> pickDateTime() async {
+    TimeOfDay? newTime;
+    DateTime? newDate;
+
+    newDate = await showDatePicker(
+      context: context,
+      initialDate: initialArchive.date,
+      firstDate: DateTime(1990),
+      lastDate: DateTime.now()
+    );
+
+    if (newDate != null) {
+
+      newTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now()
+      );
+    }
+
+    if (newDate != null && newTime != null) {
+      changeDate(
+        DateTime(newDate.year, newDate.month, newDate.day, newTime.hour, newTime.minute)
+      );
+    }
+  }
+
+
+  Future<void> deleteArchive() async {
+    await tryCatch(firebaseService.deleteArchive(archiveId: initialArchive.archiveId));
+  }
+
+  Future<void> editArchive() async {
     final DateTime newDate = date;
     final double newWaterLevel = double.parse(waterLevelController.text);
     final String newNote = noteController.text;
@@ -32,28 +69,37 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
       || newWaterLevel != initialArchive.waterLevel
       || newNote != initialArchive.note
     ) {
-      emit(loadingState);
-      try {
+      final ArchiveModel newArchiveModel = ArchiveModel(
+        parentLogId: initialArchive.parentLogId,
+        archiveId: initialArchive.archiveId,
+        date: newDate,
+        waterLevel: newWaterLevel,
+        note: newNote,
+        images: const []
+      );
+      await tryCatch(
         firebaseService.updateArchiveWithoutImages(
-          newArchive: ArchiveModel(
-            parentLogId: initialArchive.parentLogId,
-            archiveId: initialArchive.archiveId,
-            date: newDate,
-            waterLevel: newWaterLevel,
-            note: newNote,
-            images: const []
-          )
-        );
-      } on FirebaseException catch(error) {
-        emitErrorState(error);
-      }
+          newArchive: newArchiveModel
+        )
+      );
     }
   }
 
   final loadingState = const ArchiveFormInitial(isLoading: true);
   final notLoadingState = const ArchiveFormInitial(isLoading: false);
+
   void emitErrorState(FirebaseException error) {
     emit(ArchiveFormInitial(isLoading: false, errorMessage: error.message));
+  }
+
+  Future<void> tryCatch(Future<void> function) async {
+    emit(loadingState);
+    try {
+      await function;
+      emit(notLoadingState);
+    } on FirebaseException catch(error) {
+      emit(ArchiveFormInitial(isLoading: false, errorMessage: error.message));
+    }
   }
 
   @override

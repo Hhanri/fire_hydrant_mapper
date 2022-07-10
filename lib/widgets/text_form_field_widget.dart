@@ -1,3 +1,4 @@
+import 'package:fire_hydrant_mapper/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -16,6 +17,33 @@ class TextFormFieldWidget extends StatelessWidget {
       keyboardType: parameters.keyboardType,
       inputFormatters: parameters.inputFormatters,
       validator: parameters.validator,
+    );
+  }
+}
+
+class DatePickerTextFieldWidget extends StatelessWidget {
+  final TextEditingController controller;
+  final VoidCallback onTap;
+  const DatePickerTextFieldWidget({Key? key, required this.controller, required this.onTap}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      controller: controller,
+      decoration: const InputDecoration(
+        label: Text('Date')
+      ),
+      readOnly: true,
+      onTap: onTap,
+      keyboardType: TextInputType.none,
+      validator: (value) {
+        try {
+          value.parseStringToDate();
+          return null;
+        } catch(e) {
+          return "Wrong date format";
+        }
+      },
     );
   }
 }
