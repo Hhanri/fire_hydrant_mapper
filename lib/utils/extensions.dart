@@ -36,12 +36,12 @@ extension LatlngFromPosition on Position {
 
 extension FormatDate on DateTime {
   String formatDate() {
-    return DateFormat.yMd().add_Hm().format(this);
+    return DateFormat('dd-MM-yyyy').add_Hm().format(this);
   }
 }
 
 extension ParseStringToDate on String? {
   DateTime parseStringToDate() {
-    return DateFormat.yMd().add_Hm().parseStrict(this!);
+    return DateFormat('dd-MM-yyyy').add_Hm().parseStrict(this!);
   }
 }
