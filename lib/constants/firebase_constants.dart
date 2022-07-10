@@ -3,7 +3,7 @@ class FirebaseConstants {
   //collections
   static const String logsCollection = 'logs';
   static const String archivesCollection = 'archives';
-
+  static const String imagesCollection = 'images';
 
   //parameters
     //logs
@@ -17,5 +17,8 @@ class FirebaseConstants {
   static const String date = 'date';
   static const String waterLevel = 'waterLevel';
   static const String note = 'note';
-  static const String images = 'images';
+    //images
+  static const String parentArchiveId = 'parentArchiveId';
+  static const String url = 'url';
+
 }

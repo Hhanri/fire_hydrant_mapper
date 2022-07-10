@@ -25,17 +25,7 @@ class LogFormCubit extends Cubit<LogFormState> {
     streetNameController.text = initialLog.streetName;
     latitudeController.text = initialLog.geoPoint.latitude.toString();
     longitudeController.text = initialLog.geoPoint.longitude.toString();
-    archivesStreamController.addStream(getArchivesStream());
-  }
-
-  Stream<List<ArchiveModel>> getArchivesStream() {
-    return firebaseService
-      .getArchivesStream(logId: initialLog.logId)
-      .map((event) {
-        return event.docs.map((doc) {
-          return ArchiveModel.fromJson(doc.data());
-        }).toList();
-      });
+    archivesStreamController.addStream(firebaseService.getArchivesStream(parentLogId: initialLog.logId));
   }
 
   Future<void> editLog() async {

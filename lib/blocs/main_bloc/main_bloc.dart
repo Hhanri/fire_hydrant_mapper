@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_hydrant_mapper/models/log_model.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
 import 'package:fire_hydrant_mapper/services/location_service.dart';
@@ -21,11 +20,7 @@ class MainBloc extends Bloc<MainEvent, MainState> {
   MainBloc({required this.firebaseService}) : super(MainInitial()) {
 
     void listenToLogs() {
-      firebaseService.getLogsStream().listen((QuerySnapshot<Map<String, dynamic>> event) async {
-        final List<Map<String, dynamic>> docs = event.docs.map((doc) => doc.data()).toList();
-        final List<LogModel> logs = docs.map((log) => LogModel.fromJson(log)).toList();
-        logsController.sink.add(logs);
-      });
+      logsController.addStream(firebaseService.getLogsStream());
     }
 
     on<MainInitializeEvent>((event, emit) async {

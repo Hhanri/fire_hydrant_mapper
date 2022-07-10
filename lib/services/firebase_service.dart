@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fire_hydrant_mapper/constants/firebase_constants.dart';
 import 'package:fire_hydrant_mapper/models/archive_model.dart';
+import 'package:fire_hydrant_mapper/models/image_model.dart';
 import 'package:fire_hydrant_mapper/models/log_model.dart';
 import 'package:fire_hydrant_mapper/services/location_service.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
@@ -97,15 +98,39 @@ class FirebaseService {
     }
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getLogsStream() {
-    return fireInstance.collection(FirebaseConstants.logsCollection).snapshots();
+  Stream<List<LogModel>> getLogsStream() {
+    return fireInstance
+      .collection(FirebaseConstants.logsCollection)
+      .snapshots()
+      .map((event) {
+        return event.docs.map((doc) {
+          return LogModel.fromJson(doc.data());
+        }).toList();
+      });
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getArchivesStream({required String logId}) {
+  Stream<List<ArchiveModel>> getArchivesStream({required String parentLogId}) {
     return fireInstance
       .collection(FirebaseConstants.archivesCollection)
-      .where(FirebaseConstants.parentLogId, isEqualTo: logId)
+      .where(FirebaseConstants.parentLogId, isEqualTo: parentLogId)
       .orderBy(FirebaseConstants.date)
-      .snapshots();
+      .snapshots()
+      .map((event) {
+        return event.docs.map((doc) {
+          return ArchiveModel.fromJson(doc.data());
+        }).toList();
+      });
+  }
+
+  Stream<List<ImageModel>> getImagesStream({required String parentArchiveId}) {
+    return fireInstance
+      .collection(FirebaseConstants.imagesCollection)
+      .where(FirebaseConstants.parentArchiveId, isEqualTo: parentArchiveId)
+      .snapshots()
+      .map((event) {
+        return event.docs.map((doc) {
+          return ImageModel.fromJson(doc.data());
+        }).toList();
+      });
   }
 }

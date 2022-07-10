@@ -75,7 +75,6 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
         date: newDate,
         waterLevel: newWaterLevel,
         note: newNote,
-        images: const []
       );
       await tryCatch(
         firebaseService.updateArchiveWithoutImages(

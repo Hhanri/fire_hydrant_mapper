@@ -9,7 +9,6 @@ class ArchiveModel extends Equatable {
   final DateTime date;
   final double waterLevel;
   final String note;
-  final List<String> images;
 
   const ArchiveModel({
     required this.parentLogId,
@@ -17,7 +16,6 @@ class ArchiveModel extends Equatable {
     required this.date,
     required this.waterLevel,
     required this.note,
-    required this.images
   });
 
   factory ArchiveModel.fromJson(Map<String, dynamic> json) {
@@ -27,7 +25,6 @@ class ArchiveModel extends Equatable {
       date: (json[FirebaseConstants.date] as Timestamp).toDate(),
       waterLevel: json[FirebaseConstants.waterLevel],
       note: json[FirebaseConstants.note],
-      images: List<String>.from(json[FirebaseConstants.images])
     );
   }
 
@@ -38,7 +35,6 @@ class ArchiveModel extends Equatable {
       FirebaseConstants.date: model.date,
       FirebaseConstants.waterLevel: model.waterLevel,
       FirebaseConstants.note: model.note,
-      FirebaseConstants.images: model.images
     };
   }
 
@@ -59,10 +55,9 @@ class ArchiveModel extends Equatable {
       date: DateTime.now(),
       waterLevel: 0,
       note: "",
-      images: const []
     );
   }
 
   @override
-  List<Object?> get props => [date, waterLevel, note, images];
+  List<Object?> get props => [date, waterLevel, note];
 }
