@@ -64,6 +64,13 @@ class ArchiveFormPage extends StatelessWidget {
                     TextFormFieldWidget(
                       parameters: NoteParameters(controller: context.read<ArchiveFormCubit>().noteController)
                     ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        context.read<ArchiveFormCubit>().pickImage();
+                      },
+                      icon: const Icon(Icons.add),
+                      label: const Text('Add photo')
+                    )
                   ],
                 ),
               ),

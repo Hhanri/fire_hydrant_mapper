@@ -6,6 +6,7 @@ import 'package:fire_hydrant_mapper/services/firebase_service.dart';
 import 'package:fire_hydrant_mapper/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 part 'archive_form_state.dart';
 
 class ArchiveFormCubit extends Cubit<ArchiveFormState> {
@@ -18,6 +19,7 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
   final TextEditingController dateController = TextEditingController();
   final TextEditingController waterLevelController = TextEditingController();
   final TextEditingController noteController = TextEditingController();
+  final ImagePicker picker = ImagePicker();
 
   void init() {
     date = initialArchive.date;
@@ -89,6 +91,17 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
         function: () async => await firebaseService.updateArchiveWithoutImages(newArchive: newArchiveModel)
       );
     }
+  }
+
+  void pickImage() async {
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+    continueDialog(
+      action: 'upload',
+      elementName: 'image',
+      shouldPop: false,
+      function: () async => await firebaseService.uploadImage(parentArchiveId: initialArchive.archiveId, image: image)
+    );
   }
 
   final loadingState = const ArchiveFormInitial(isLoading: true);
