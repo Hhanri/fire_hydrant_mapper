@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fire_hydrant_mapper/blocs/archive_form_cubit/archive_form_cubit.dart';
 import 'package:fire_hydrant_mapper/models/image_model.dart';
-import 'package:fire_hydrant_mapper/widgets/custom_icon_button_widget.dart';
+import 'package:fire_hydrant_mapper/widgets/squared_icon_button_widget.dart';
 import 'package:fire_hydrant_mapper/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
