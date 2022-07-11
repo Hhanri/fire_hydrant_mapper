@@ -18,7 +18,7 @@ class ImagesListViewWidget extends StatelessWidget {
             padding: const EdgeInsets.all(8),
             itemCount: images.length,
             itemBuilder: (context, index) {
-              return ImageWidget(imageModel:images[index]);
+              return ImageWidget(image:images[index]);
             },
           );
         }

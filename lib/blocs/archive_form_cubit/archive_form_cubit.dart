@@ -113,6 +113,15 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
     return firebaseService.downloadURL(image.path);
   }
 
+  void deleteImage(ImageModel image) {
+    continueDialog(
+      action: 'delete',
+      elementName: 'image',
+      shouldPop: false,
+      function: () async =>await firebaseService.deleteImage(image: image)
+    );
+  }
+
   final loadingState = const ArchiveFormInitial(isLoading: true);
   final notLoadingState = const ArchiveFormInitial(isLoading: false);
 

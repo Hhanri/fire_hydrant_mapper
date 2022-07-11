@@ -177,7 +177,6 @@ class FirebaseService {
       .snapshots()
       .map((event) {
         return event.docs.map((doc) {
-          print(doc);
           return ImageModel.fromJson(doc.data());
         }).toList();
       });
