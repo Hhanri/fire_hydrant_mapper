@@ -17,6 +17,7 @@ class TextFormFieldWidget extends StatelessWidget {
       keyboardType: parameters.keyboardType,
       inputFormatters: parameters.inputFormatters,
       validator: parameters.validator,
+      maxLines: parameters.maxLines,
     );
   }
 }
@@ -52,6 +53,7 @@ class TextFormParameters {
   final TextEditingController controller;
   final String label;
   final String hint;
+  final int maxLines;
   final TextInputType keyboardType;
   final String? Function(String?) validator;
   List<TextInputFormatter> inputFormatters;
@@ -60,6 +62,7 @@ class TextFormParameters {
     required this.controller,
     required this.label,
     required this.hint,
+    required this.maxLines,
     required this.validator,
     required this.keyboardType,
     required this.inputFormatters
@@ -73,6 +76,7 @@ class WaterLevelParameters extends TextFormParameters{
     controller: controller,
     hint: "458974",
     label: "Water Level",
+    maxLines: 1,
     validator: (value) {
       if (double.tryParse(value ?? "") != null) {
         return null;
@@ -95,6 +99,7 @@ class LatitudeParameters extends TextFormParameters{
     controller: controller,
     hint: "48.974",
     label: "Latitude",
+    maxLines: 1,
     validator: (value) {
       if (double.tryParse(value ?? "") != null) {
         return null;
@@ -117,6 +122,7 @@ class LongitudeParameters extends TextFormParameters{
     controller: controller,
     hint: "48.974",
     label: "Longitude",
+    maxLines: 1,
     validator: (value) {
       if (double.tryParse(value ?? "") != null) {
         return null;
@@ -139,6 +145,7 @@ class StreetNameParameters extends TextFormParameters{
     controller: controller,
     hint: "89 rue du Pont",
     label: "Street Name",
+    maxLines: 1,
     validator: (value) => null,
     keyboardType: TextInputType.text,
     inputFormatters: [
@@ -156,11 +163,11 @@ class NoteParameters extends TextFormParameters {
     controller: controller,
     hint: "something to jot down",
     label: "Note",
+    maxLines: 4,
     validator: (value) => null,
-    keyboardType: TextInputType.text,
+    keyboardType: TextInputType.multiline,
     inputFormatters: [
       FilteringTextInputFormatter.deny(RegExp(r'[/\\]')),
-      FilteringTextInputFormatter.singleLineFormatter,
     ]
   );
 }
