@@ -4,6 +4,7 @@ import 'package:fire_hydrant_mapper/models/archive_model.dart';
 import 'package:fire_hydrant_mapper/screens/loading/loading_screen.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
 import 'package:fire_hydrant_mapper/widgets/form_app_bar.dart';
+import 'package:fire_hydrant_mapper/widgets/images_list_view_widget.dart';
 import 'package:fire_hydrant_mapper/widgets/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -64,6 +65,7 @@ class ArchiveFormPage extends StatelessWidget {
                     TextFormFieldWidget(
                       parameters: NoteParameters(controller: context.read<ArchiveFormCubit>().noteController)
                     ),
+                    Expanded(child: ImagesListViewWidget(stream: context.read<ArchiveFormCubit>().imagesStreamController.stream,)),
                     ElevatedButton.icon(
                       onPressed: () {
                         context.read<ArchiveFormCubit>().pickImage();

@@ -1,5 +1,6 @@
 import 'package:fire_hydrant_mapper/blocs/main_bloc/main_bloc.dart';
 import 'package:fire_hydrant_mapper/models/log_model.dart';
+import 'package:fire_hydrant_mapper/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -46,9 +47,7 @@ class MapWidget extends StatelessWidget {
                 },
               );
             }
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const LoadingWidget();
           }
         );
       },

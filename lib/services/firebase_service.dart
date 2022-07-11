@@ -119,19 +119,19 @@ class FirebaseService {
   }
 
   Future<void> uploadImage({required String parentArchiveId, required XFile image}) async {
-    final ImageModel imageModel = ImageModel(parentArchiveId: parentArchiveId, url: "images/${image.name}");
-    final Reference ref = firebaseStorage.ref().child(imageModel.url);
+    final ImageModel imageModel = ImageModel(parentArchiveId: parentArchiveId, path: "images/${image.name}");
+    final Reference ref = firebaseStorage.ref().child(imageModel.path);
     await ref.putData(await image.readAsBytes(), SettableMetadata(contentType: "image/jpeg"));
     await setImage(imageModel: imageModel);
   }
 
   Future<void> deleteImage({required ImageModel image}) async {
     await firebaseStorage
-        .ref(image.url)
+        .ref(image.path)
         .delete();
     await firebaseInstance
       .collection(FirebaseConstants.imagesCollection)
-      .where(FirebaseConstants.url, isEqualTo: image.url)
+      .where(FirebaseConstants.path, isEqualTo: image.path)
       .where(FirebaseConstants.parentArchiveId, isEqualTo: image.parentArchiveId)
       .get()
       .then((imagesDocs) {
@@ -177,6 +177,7 @@ class FirebaseService {
       .snapshots()
       .map((event) {
         return event.docs.map((doc) {
+          print(doc);
           return ImageModel.fromJson(doc.data());
         }).toList();
       });

@@ -19,6 +19,6 @@ class FirebaseConstants {
   static const String note = 'note';
     //images
   static const String parentArchiveId = 'parentArchiveId';
+  static const String path = 'path';
   static const String url = 'url';
-
 }

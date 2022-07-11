@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:fire_hydrant_mapper/dialogs/validate_dialog.dart';
 import 'package:fire_hydrant_mapper/models/archive_model.dart';
+import 'package:fire_hydrant_mapper/models/image_model.dart';
 import 'package:fire_hydrant_mapper/services/firebase_service.dart';
 import 'package:fire_hydrant_mapper/utils/extensions.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +16,7 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
   final ArchiveModel initialArchive;
   final FirebaseService firebaseService;
   final BuildContext context;
+  final StreamController<List<ImageModel>> imagesStreamController = StreamController<List<ImageModel>>();
   ArchiveFormCubit({required this.initialArchive, required this.firebaseService, required this.context}) : super(const ArchiveFormInitial(isLoading: false));
 
   late DateTime date;
@@ -22,6 +26,7 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
   final ImagePicker picker = ImagePicker();
 
   void init() {
+    imagesStreamController.addStream(firebaseService.getImagesStream(parentArchiveId: initialArchive.archiveId));
     date = initialArchive.date;
     dateController.text = initialArchive.date.formatDate();
     waterLevelController.text = initialArchive.waterLevel.toString();
@@ -104,6 +109,10 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
     );
   }
 
+  Future<String> getImageUrl(ImageModel image) async {
+    return firebaseService.downloadURL(image.path);
+  }
+
   final loadingState = const ArchiveFormInitial(isLoading: true);
   final notLoadingState = const ArchiveFormInitial(isLoading: false);
 
@@ -130,6 +139,7 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
 
   @override
   Future<void> close () {
+    imagesStreamController.close();
     dateController.dispose();
     waterLevelController.dispose();
     noteController.dispose();
