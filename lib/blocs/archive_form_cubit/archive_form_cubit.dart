@@ -98,8 +98,8 @@ class ArchiveFormCubit extends Cubit<ArchiveFormState> {
     }
   }
 
-  void pickImage() async {
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+  void pickImage({required ImageSource imageSource}) async {
+    final XFile? image = await picker.pickImage(source: imageSource);
     if (image == null) return;
     continueDialog(
       action: 'upload',

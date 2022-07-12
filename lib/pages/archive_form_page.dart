@@ -8,6 +8,7 @@ import 'package:fire_hydrant_mapper/widgets/images_list_view_widget.dart';
 import 'package:fire_hydrant_mapper/widgets/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 class ArchiveFormPage extends StatelessWidget {
   final ArchiveModel initialArchive;
@@ -66,13 +67,7 @@ class ArchiveFormPage extends StatelessWidget {
                       parameters: NoteParameters(controller: context.read<ArchiveFormCubit>().noteController)
                     ),
                     Expanded(child: ImagesListViewWidget(stream: context.read<ArchiveFormCubit>().imagesStreamController.stream,)),
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        context.read<ArchiveFormCubit>().pickImage();
-                      },
-                      icon: const Icon(Icons.add),
-                      label: const Text('Add photo')
-                    )
+                    const AddPhotoButtonWidget()
                   ],
                 ),
               ),
@@ -80,6 +75,51 @@ class ArchiveFormPage extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class AddPhotoButtonWidget extends StatelessWidget {
+  const AddPhotoButtonWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: () async {
+        await showModalBottomSheet(
+          context: context,
+          builder: (_) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                innerButton(context: context, imageSource: ImageSource.camera, icon: Icons.photo_camera, label: 'Camera'),
+                innerButton(context: context, imageSource: ImageSource.gallery, icon: Icons.photo, label: 'Gallery')
+              ],
+            );
+          }
+        );
+      },
+      icon: const Icon(Icons.add),
+      label: const Text('Add photo')
+    );
+  }
+
+  Widget innerButton({required BuildContext context, required ImageSource imageSource, required IconData icon, required String label}) {
+    return Row(
+      children: [
+        Expanded(
+          child: TextButton.icon(
+            onPressed: () {
+              Navigator.of(context).pop();
+              context.read<ArchiveFormCubit>().pickImage(imageSource: imageSource);
+            },
+            icon: Icon(icon),
+            label: Text(label)
+          ),
+        ),
+      ],
     );
   }
 }
